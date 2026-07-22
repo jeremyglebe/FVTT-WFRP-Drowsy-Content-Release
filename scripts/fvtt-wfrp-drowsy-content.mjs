@@ -177,19 +177,19 @@ var M, Oe = /* @__PURE__ */ new WeakSet(), ke = class {
 	}
 	run() {
 		if (!(this.flags & 1)) return this.fn();
-		this.flags |= 2, Ke(this), Ie(this);
-		let e = M, t = He;
-		M = this, He = !0;
+		this.flags |= 2, Ge(this), Ie(this);
+		let e = M, t = N;
+		M = this, N = !0;
 		try {
 			return this.fn();
 		} finally {
-			Le(this), M = e, He = t, this.flags &= -3;
+			Le(this), M = e, N = t, this.flags &= -3;
 		}
 	}
 	stop() {
 		if (this.flags & 1) {
 			for (let e = this.deps; e; e = e.nextDep) Be(e);
-			this.deps = this.depsTail = void 0, Ke(this), this.onStop && this.onStop(), this.flags &= -2;
+			this.deps = this.depsTail = void 0, Ge(this), this.onStop && this.onStop(), this.flags &= -2;
 		}
 	}
 	trigger() {
@@ -252,10 +252,10 @@ function Re(e) {
 	return !!e._dirty;
 }
 function ze(e) {
-	if (e.flags & 4 && !(e.flags & 16) || (e.flags &= -17, e.globalVersion === qe) || (e.globalVersion = qe, !e.isSSR && e.flags & 128 && (!e.deps && !e._dirty || !Re(e)))) return;
+	if (e.flags & 4 && !(e.flags & 16) || (e.flags &= -17, e.globalVersion === Ke) || (e.globalVersion = Ke, !e.isSSR && e.flags & 128 && (!e.deps && !e._dirty || !Re(e)))) return;
 	e.flags |= 2;
-	let t = e.dep, n = M, r = He;
-	M = e, He = !0;
+	let t = e.dep, n = M, r = N;
+	M = e, N = !0;
 	try {
 		Ie(e);
 		let n = e.fn(e._value);
@@ -263,7 +263,7 @@ function ze(e) {
 	} catch (e) {
 		throw t.version++, e;
 	} finally {
-		M = n, He = r, Le(e), e.flags &= -3;
+		M = n, N = r, Le(e), e.flags &= -3;
 	}
 }
 function Be(e, t = !1) {
@@ -278,15 +278,15 @@ function Ve(e) {
 	let { prevDep: t, nextDep: n } = e;
 	t && (t.nextDep = n, e.prevDep = void 0), n && (n.prevDep = t, e.nextDep = void 0);
 }
-var He = !0, Ue = [];
+var N = !0, He = [];
+function Ue() {
+	He.push(N), N = !1;
+}
 function We() {
-	Ue.push(He), He = !1;
+	let e = He.pop();
+	N = e === void 0 ? !0 : e;
 }
-function Ge() {
-	let e = Ue.pop();
-	He = e === void 0 ? !0 : e;
-}
-function Ke(e) {
+function Ge(e) {
 	let { cleanup: t } = e;
 	if (e.cleanup = void 0, t) {
 		let e = M;
@@ -298,18 +298,18 @@ function Ke(e) {
 		}
 	}
 }
-var qe = 0, Je = class {
+var Ke = 0, qe = class {
 	constructor(e, t) {
 		this.sub = e, this.dep = t, this.version = t.version, this.nextDep = this.prevDep = this.nextSub = this.prevSub = this.prevActiveLink = void 0;
 	}
-}, Ye = class {
+}, Je = class {
 	constructor(e) {
 		this.computed = e, this.version = 0, this.activeLink = void 0, this.subs = void 0, this.map = void 0, this.key = void 0, this.sc = 0, this.__v_skip = !0;
 	}
 	track(e) {
-		if (!M || !He || M === this.computed) return;
+		if (!M || !N || M === this.computed) return;
 		let t = this.activeLink;
-		if (t === void 0 || t.sub !== M) t = this.activeLink = new Je(M, this), M.deps ? (t.prevDep = M.depsTail, M.depsTail.nextDep = t, M.depsTail = t) : M.deps = M.depsTail = t, Xe(t);
+		if (t === void 0 || t.sub !== M) t = this.activeLink = new qe(M, this), M.deps ? (t.prevDep = M.depsTail, M.depsTail.nextDep = t, M.depsTail = t) : M.deps = M.depsTail = t, Ye(t);
 		else if (t.version === -1 && (t.version = this.version, t.nextDep)) {
 			let e = t.nextDep;
 			e.prevDep = t.prevDep, t.prevDep && (t.prevDep.nextDep = e), t.prevDep = M.depsTail, t.nextDep = void 0, M.depsTail.nextDep = t, M.depsTail = t, M.deps === t && (M.deps = e);
@@ -317,7 +317,7 @@ var qe = 0, Je = class {
 		return t;
 	}
 	trigger(e) {
-		this.version++, qe++, this.notify(e);
+		this.version++, Ke++, this.notify(e);
 	}
 	notify(e) {
 		Pe();
@@ -328,30 +328,30 @@ var qe = 0, Je = class {
 		}
 	}
 };
-function Xe(e) {
+function Ye(e) {
 	if (e.dep.sc++, e.sub.flags & 4) {
 		let t = e.dep.computed;
 		if (t && !e.dep.subs) {
 			t.flags |= 20;
-			for (let e = t.deps; e; e = e.nextDep) Xe(e);
+			for (let e = t.deps; e; e = e.nextDep) Ye(e);
 		}
 		let n = e.dep.subs;
 		n !== e && (e.prevSub = n, n && (n.nextSub = e)), e.dep.subs = e;
 	}
 }
-var Ze = /* @__PURE__ */ new WeakMap(), Qe = /* @__PURE__ */ Symbol(""), $e = /* @__PURE__ */ Symbol(""), et = /* @__PURE__ */ Symbol("");
-function N(e, t, n) {
-	if (He && M) {
-		let t = Ze.get(e);
-		t || Ze.set(e, t = /* @__PURE__ */ new Map());
+var Xe = /* @__PURE__ */ new WeakMap(), Ze = /* @__PURE__ */ Symbol(""), Qe = /* @__PURE__ */ Symbol(""), $e = /* @__PURE__ */ Symbol("");
+function P(e, t, n) {
+	if (N && M) {
+		let t = Xe.get(e);
+		t || Xe.set(e, t = /* @__PURE__ */ new Map());
 		let r = t.get(n);
-		r || (t.set(n, r = new Ye()), r.map = t, r.key = n), r.track();
+		r || (t.set(n, r = new Je()), r.map = t, r.key = n), r.track();
 	}
 }
-function tt(e, t, n, r, i, a) {
-	let o = Ze.get(e);
+function et(e, t, n, r, i, a) {
+	let o = Xe.get(e);
 	if (!o) {
-		qe++;
+		Ke++;
 		return;
 	}
 	let s = (e) => {
@@ -363,171 +363,171 @@ function tt(e, t, n, r, i, a) {
 		if (i && n === "length") {
 			let e = Number(r);
 			o.forEach((t, n) => {
-				(n === "length" || n === et || !_(n) && n >= e) && s(t);
+				(n === "length" || n === $e || !_(n) && n >= e) && s(t);
 			});
-		} else switch ((n !== void 0 || o.has(void 0)) && s(o.get(n)), a && s(o.get(et)), t) {
+		} else switch ((n !== void 0 || o.has(void 0)) && s(o.get(n)), a && s(o.get($e)), t) {
 			case "add":
-				i ? a && s(o.get("length")) : (s(o.get(Qe)), f(e) && s(o.get($e)));
+				i ? a && s(o.get("length")) : (s(o.get(Ze)), f(e) && s(o.get(Qe)));
 				break;
 			case "delete":
-				i || (s(o.get(Qe)), f(e) && s(o.get($e)));
+				i || (s(o.get(Ze)), f(e) && s(o.get(Qe)));
 				break;
 			case "set":
-				f(e) && s(o.get(Qe));
+				f(e) && s(o.get(Ze));
 				break;
 		}
 	}
 	Fe();
 }
-function nt(e, t) {
-	let n = Ze.get(e);
+function tt(e, t) {
+	let n = Xe.get(e);
 	return n && n.get(t);
 }
+function nt(e) {
+	let t = /* @__PURE__ */ I(e);
+	return t === e ? t : (P(t, "iterate", $e), /* @__PURE__ */ F(e) ? t : t.map(Ut));
+}
 function rt(e) {
-	let t = /* @__PURE__ */ F(e);
-	return t === e ? t : (N(t, "iterate", et), /* @__PURE__ */ P(e) ? t : t.map(I));
+	return P(e = /* @__PURE__ */ I(e), "iterate", $e), e;
 }
-function it(e) {
-	return N(e = /* @__PURE__ */ F(e), "iterate", et), e;
+function it(e, t) {
+	return /* @__PURE__ */ Bt(e) ? Wt(/* @__PURE__ */ zt(e) ? Ut(t) : t) : Ut(t);
 }
-function at(e, t) {
-	return /* @__PURE__ */ Vt(e) ? Wt(/* @__PURE__ */ Bt(e) ? I(t) : t) : I(t);
-}
-var ot = {
+var at = {
 	__proto__: null,
 	[Symbol.iterator]() {
-		return st(this, Symbol.iterator, (e) => at(this, e));
+		return ot(this, Symbol.iterator, (e) => it(this, e));
 	},
 	concat(...e) {
-		return rt(this).concat(...e.map((e) => d(e) ? rt(e) : e));
+		return nt(this).concat(...e.map((e) => d(e) ? nt(e) : e));
 	},
 	entries() {
-		return st(this, "entries", (e) => (e[1] = at(this, e[1]), e));
+		return ot(this, "entries", (e) => (e[1] = it(this, e[1]), e));
 	},
 	every(e, t) {
-		return lt(this, "every", e, t, void 0, arguments);
+		return ct(this, "every", e, t, void 0, arguments);
 	},
 	filter(e, t) {
-		return lt(this, "filter", e, t, (e) => e.map((e) => at(this, e)), arguments);
+		return ct(this, "filter", e, t, (e) => e.map((e) => it(this, e)), arguments);
 	},
 	find(e, t) {
-		return lt(this, "find", e, t, (e) => at(this, e), arguments);
+		return ct(this, "find", e, t, (e) => it(this, e), arguments);
 	},
 	findIndex(e, t) {
-		return lt(this, "findIndex", e, t, void 0, arguments);
+		return ct(this, "findIndex", e, t, void 0, arguments);
 	},
 	findLast(e, t) {
-		return lt(this, "findLast", e, t, (e) => at(this, e), arguments);
+		return ct(this, "findLast", e, t, (e) => it(this, e), arguments);
 	},
 	findLastIndex(e, t) {
-		return lt(this, "findLastIndex", e, t, void 0, arguments);
+		return ct(this, "findLastIndex", e, t, void 0, arguments);
 	},
 	forEach(e, t) {
-		return lt(this, "forEach", e, t, void 0, arguments);
+		return ct(this, "forEach", e, t, void 0, arguments);
 	},
 	includes(...e) {
-		return dt(this, "includes", e);
+		return ut(this, "includes", e);
 	},
 	indexOf(...e) {
-		return dt(this, "indexOf", e);
+		return ut(this, "indexOf", e);
 	},
 	join(e) {
-		return rt(this).join(e);
+		return nt(this).join(e);
 	},
 	lastIndexOf(...e) {
-		return dt(this, "lastIndexOf", e);
+		return ut(this, "lastIndexOf", e);
 	},
 	map(e, t) {
-		return lt(this, "map", e, t, void 0, arguments);
+		return ct(this, "map", e, t, void 0, arguments);
 	},
 	pop() {
-		return ft(this, "pop");
+		return dt(this, "pop");
 	},
 	push(...e) {
-		return ft(this, "push", e);
+		return dt(this, "push", e);
 	},
 	reduce(e, ...t) {
-		return ut(this, "reduce", e, t);
+		return lt(this, "reduce", e, t);
 	},
 	reduceRight(e, ...t) {
-		return ut(this, "reduceRight", e, t);
+		return lt(this, "reduceRight", e, t);
 	},
 	shift() {
-		return ft(this, "shift");
+		return dt(this, "shift");
 	},
 	some(e, t) {
-		return lt(this, "some", e, t, void 0, arguments);
+		return ct(this, "some", e, t, void 0, arguments);
 	},
 	splice(...e) {
-		return ft(this, "splice", e);
+		return dt(this, "splice", e);
 	},
 	toReversed() {
-		return rt(this).toReversed();
+		return nt(this).toReversed();
 	},
 	toSorted(e) {
-		return rt(this).toSorted(e);
+		return nt(this).toSorted(e);
 	},
 	toSpliced(...e) {
-		return rt(this).toSpliced(...e);
+		return nt(this).toSpliced(...e);
 	},
 	unshift(...e) {
-		return ft(this, "unshift", e);
+		return dt(this, "unshift", e);
 	},
 	values() {
-		return st(this, "values", (e) => at(this, e));
+		return ot(this, "values", (e) => it(this, e));
 	}
 };
-function st(e, t, n) {
-	let r = it(e), i = r[t]();
-	return r !== e && !/* @__PURE__ */ P(e) && (i._next = i.next, i.next = () => {
+function ot(e, t, n) {
+	let r = rt(e), i = r[t]();
+	return r !== e && !/* @__PURE__ */ F(e) && (i._next = i.next, i.next = () => {
 		let e = i._next();
 		return e.done || (e.value = n(e.value)), e;
 	}), i;
 }
-var ct = Array.prototype;
-function lt(e, t, n, r, i, a) {
-	let o = it(e), s = o !== e && !/* @__PURE__ */ P(e), c = o[t];
-	if (c !== ct[t]) {
+var st = Array.prototype;
+function ct(e, t, n, r, i, a) {
+	let o = rt(e), s = o !== e && !/* @__PURE__ */ F(e), c = o[t];
+	if (c !== st[t]) {
 		let t = c.apply(e, a);
-		return s ? I(t) : t;
+		return s ? Ut(t) : t;
 	}
 	let l = n;
 	o !== e && (s ? l = function(t, r) {
-		return n.call(this, at(e, t), r, e);
+		return n.call(this, it(e, t), r, e);
 	} : n.length > 2 && (l = function(t, r) {
 		return n.call(this, t, r, e);
 	}));
 	let u = c.call(o, l, r);
 	return s && i ? i(u) : u;
 }
-function ut(e, t, n, r) {
-	let i = it(e), a = i !== e && !/* @__PURE__ */ P(e), o = n, s = !1;
+function lt(e, t, n, r) {
+	let i = rt(e), a = i !== e && !/* @__PURE__ */ F(e), o = n, s = !1;
 	i !== e && (a ? (s = r.length === 0, o = function(t, r, i) {
-		return s && (s = !1, t = at(e, t)), n.call(this, t, at(e, r), i, e);
+		return s && (s = !1, t = it(e, t)), n.call(this, t, it(e, r), i, e);
 	}) : n.length > 3 && (o = function(t, r, i) {
 		return n.call(this, t, r, i, e);
 	}));
 	let c = i[t](o, ...r);
-	return s ? at(e, c) : c;
+	return s ? it(e, c) : c;
 }
-function dt(e, t, n) {
-	let r = /* @__PURE__ */ F(e);
-	N(r, "iterate", et);
+function ut(e, t, n) {
+	let r = /* @__PURE__ */ I(e);
+	P(r, "iterate", $e);
 	let i = r[t](...n);
-	return (i === -1 || i === !1) && /* @__PURE__ */ Ht(n[0]) ? (n[0] = /* @__PURE__ */ F(n[0]), r[t](...n)) : i;
+	return (i === -1 || i === !1) && /* @__PURE__ */ Vt(n[0]) ? (n[0] = /* @__PURE__ */ I(n[0]), r[t](...n)) : i;
 }
-function ft(e, t, n = []) {
-	We(), Pe();
-	let r = (/* @__PURE__ */ F(e))[t].apply(e, n);
-	return Fe(), Ge(), r;
+function dt(e, t, n = []) {
+	Ue(), Pe();
+	let r = (/* @__PURE__ */ I(e))[t].apply(e, n);
+	return Fe(), We(), r;
 }
-var pt = /* @__PURE__ */ e("__proto__,__v_isRef,__isVue"), mt = new Set(/* @__PURE__ */ Object.getOwnPropertyNames(Symbol).filter((e) => e !== "arguments" && e !== "caller").map((e) => Symbol[e]).filter(_));
-function ht(e) {
+var ft = /* @__PURE__ */ e("__proto__,__v_isRef,__isVue"), pt = new Set(/* @__PURE__ */ Object.getOwnPropertyNames(Symbol).filter((e) => e !== "arguments" && e !== "caller").map((e) => Symbol[e]).filter(_));
+function mt(e) {
 	_(e) || (e = String(e));
-	let t = /* @__PURE__ */ F(this);
-	return N(t, "has", e), t.hasOwnProperty(e);
+	let t = /* @__PURE__ */ I(this);
+	return P(t, "has", e), t.hasOwnProperty(e);
 }
-var gt = class {
+var ht = class {
 	constructor(e = !1, t = !1) {
 		this._isReadonly = e, this._isShallow = t;
 	}
@@ -537,46 +537,46 @@ var gt = class {
 		if (t === "__v_isReactive") return !r;
 		if (t === "__v_isReadonly") return r;
 		if (t === "__v_isShallow") return i;
-		if (t === "__v_raw") return n === (r ? i ? Pt : Nt : i ? Mt : jt).get(e) || Object.getPrototypeOf(e) === Object.getPrototypeOf(n) ? e : void 0;
+		if (t === "__v_raw") return n === (r ? i ? Nt : Mt : i ? jt : At).get(e) || Object.getPrototypeOf(e) === Object.getPrototypeOf(n) ? e : void 0;
 		let a = d(e);
 		if (!r) {
 			let e;
-			if (a && (e = ot[t])) return e;
-			if (t === "hasOwnProperty") return ht;
+			if (a && (e = at[t])) return e;
+			if (t === "hasOwnProperty") return mt;
 		}
 		let o = Reflect.get(e, t, /* @__PURE__ */ L(e) ? e : n);
-		if ((_(t) ? mt.has(t) : pt(t)) || (r || N(e, "get", t), i)) return o;
+		if ((_(t) ? pt.has(t) : ft(t)) || (r || P(e, "get", t), i)) return o;
 		if (/* @__PURE__ */ L(o)) {
 			let e = a && w(t) ? o : o.value;
-			return r && v(e) ? /* @__PURE__ */ Rt(e) : e;
+			return r && v(e) ? /* @__PURE__ */ Lt(e) : e;
 		}
-		return v(o) ? r ? /* @__PURE__ */ Rt(o) : /* @__PURE__ */ It(o) : o;
+		return v(o) ? r ? /* @__PURE__ */ Lt(o) : /* @__PURE__ */ Ft(o) : o;
 	}
-}, _t = class extends gt {
+}, gt = class extends ht {
 	constructor(e = !1) {
 		super(!1, e);
 	}
 	set(e, t, n, r) {
 		let i = e[t], a = d(e) && w(t);
 		if (!this._isShallow) {
-			let e = /* @__PURE__ */ Vt(i);
-			if (!/* @__PURE__ */ P(n) && !/* @__PURE__ */ Vt(n) && (i = /* @__PURE__ */ F(i), n = /* @__PURE__ */ F(n)), !a && /* @__PURE__ */ L(i) && !/* @__PURE__ */ L(n)) return e || (i.value = n), !0;
+			let e = /* @__PURE__ */ Bt(i);
+			if (!/* @__PURE__ */ F(n) && !/* @__PURE__ */ Bt(n) && (i = /* @__PURE__ */ I(i), n = /* @__PURE__ */ I(n)), !a && /* @__PURE__ */ L(i) && !/* @__PURE__ */ L(n)) return e || (i.value = n), !0;
 		}
 		let o = a ? Number(t) < e.length : u(e, t), s = Reflect.set(e, t, n, /* @__PURE__ */ L(e) ? e : r);
-		return e === /* @__PURE__ */ F(r) && (o ? D(n, i) && tt(e, "set", t, n, i) : tt(e, "add", t, n)), s;
+		return e === /* @__PURE__ */ I(r) && (o ? D(n, i) && et(e, "set", t, n, i) : et(e, "add", t, n)), s;
 	}
 	deleteProperty(e, t) {
 		let n = u(e, t), r = e[t], i = Reflect.deleteProperty(e, t);
-		return i && n && tt(e, "delete", t, void 0, r), i;
+		return i && n && et(e, "delete", t, void 0, r), i;
 	}
 	has(e, t) {
 		let n = Reflect.has(e, t);
-		return (!_(t) || !mt.has(t)) && N(e, "has", t), n;
+		return (!_(t) || !pt.has(t)) && P(e, "has", t), n;
 	}
 	ownKeys(e) {
-		return N(e, "iterate", d(e) ? "length" : Qe), Reflect.ownKeys(e);
+		return P(e, "iterate", d(e) ? "length" : Ze), Reflect.ownKeys(e);
 	}
-}, vt = class extends gt {
+}, _t = class extends ht {
 	constructor(e = !1) {
 		super(!0, e);
 	}
@@ -586,11 +586,11 @@ var gt = class {
 	deleteProperty(e, t) {
 		return !0;
 	}
-}, yt = /* @__PURE__ */ new _t(), bt = /* @__PURE__ */ new vt(), xt = /* @__PURE__ */ new _t(!0), St = (e) => e, Ct = (e) => Reflect.getPrototypeOf(e);
-function wt(e, t, n) {
+}, vt = /* @__PURE__ */ new gt(), yt = /* @__PURE__ */ new _t(), bt = /* @__PURE__ */ new gt(!0), xt = (e) => e, St = (e) => Reflect.getPrototypeOf(e);
+function Ct(e, t, n) {
 	return function(...r) {
-		let i = this.__v_raw, a = /* @__PURE__ */ F(i), o = f(a), c = e === "entries" || e === Symbol.iterator && o, l = e === "keys" && o, u = i[e](...r), d = n ? St : t ? Wt : I;
-		return !t && N(a, "iterate", l ? $e : Qe), s(Object.create(u), { next() {
+		let i = this.__v_raw, a = /* @__PURE__ */ I(i), o = f(a), c = e === "entries" || e === Symbol.iterator && o, l = e === "keys" && o, u = i[e](...r), d = n ? xt : t ? Wt : Ut;
+		return !t && P(a, "iterate", l ? Qe : Ze), s(Object.create(u), { next() {
 			let { value: e, done: t } = u.next();
 			return t ? {
 				value: e,
@@ -602,60 +602,60 @@ function wt(e, t, n) {
 		} });
 	};
 }
-function Tt(e) {
+function wt(e) {
 	return function(...t) {
 		return e === "delete" ? !1 : e === "clear" ? void 0 : this;
 	};
 }
-function Et(e, t) {
+function Tt(e, t) {
 	let n = {
 		get(n) {
-			let r = this.__v_raw, i = /* @__PURE__ */ F(r), a = /* @__PURE__ */ F(n);
-			e || (D(n, a) && N(i, "get", n), N(i, "get", a));
-			let { has: o } = Ct(i), s = t ? St : e ? Wt : I;
+			let r = this.__v_raw, i = /* @__PURE__ */ I(r), a = /* @__PURE__ */ I(n);
+			e || (D(n, a) && P(i, "get", n), P(i, "get", a));
+			let { has: o } = St(i), s = t ? xt : e ? Wt : Ut;
 			if (o.call(i, n)) return s(r.get(n));
 			if (o.call(i, a)) return s(r.get(a));
 			r !== i && r.get(n);
 		},
 		get size() {
 			let t = this.__v_raw;
-			return !e && N(/* @__PURE__ */ F(t), "iterate", Qe), t.size;
+			return !e && P(/* @__PURE__ */ I(t), "iterate", Ze), t.size;
 		},
 		has(t) {
-			let n = this.__v_raw, r = /* @__PURE__ */ F(n), i = /* @__PURE__ */ F(t);
-			return e || (D(t, i) && N(r, "has", t), N(r, "has", i)), t === i ? n.has(t) : n.has(t) || n.has(i);
+			let n = this.__v_raw, r = /* @__PURE__ */ I(n), i = /* @__PURE__ */ I(t);
+			return e || (D(t, i) && P(r, "has", t), P(r, "has", i)), t === i ? n.has(t) : n.has(t) || n.has(i);
 		},
 		forEach(n, r) {
-			let i = this, a = i.__v_raw, o = /* @__PURE__ */ F(a), s = t ? St : e ? Wt : I;
-			return !e && N(o, "iterate", Qe), a.forEach((e, t) => n.call(r, s(e), s(t), i));
+			let i = this, a = i.__v_raw, o = /* @__PURE__ */ I(a), s = t ? xt : e ? Wt : Ut;
+			return !e && P(o, "iterate", Ze), a.forEach((e, t) => n.call(r, s(e), s(t), i));
 		}
 	};
 	return s(n, e ? {
-		add: Tt("add"),
-		set: Tt("set"),
-		delete: Tt("delete"),
-		clear: Tt("clear")
+		add: wt("add"),
+		set: wt("set"),
+		delete: wt("delete"),
+		clear: wt("clear")
 	} : {
 		add(e) {
-			let n = /* @__PURE__ */ F(this), r = Ct(n), i = /* @__PURE__ */ F(e), a = !t && !/* @__PURE__ */ P(e) && !/* @__PURE__ */ Vt(e) ? i : e;
-			return r.has.call(n, a) || D(e, a) && r.has.call(n, e) || D(i, a) && r.has.call(n, i) || (n.add(a), tt(n, "add", a, a)), this;
+			let n = /* @__PURE__ */ I(this), r = St(n), i = /* @__PURE__ */ I(e), a = !t && !/* @__PURE__ */ F(e) && !/* @__PURE__ */ Bt(e) ? i : e;
+			return r.has.call(n, a) || D(e, a) && r.has.call(n, e) || D(i, a) && r.has.call(n, i) || (n.add(a), et(n, "add", a, a)), this;
 		},
 		set(e, n) {
-			!t && !/* @__PURE__ */ P(n) && !/* @__PURE__ */ Vt(n) && (n = /* @__PURE__ */ F(n));
-			let r = /* @__PURE__ */ F(this), { has: i, get: a } = Ct(r), o = i.call(r, e);
-			o ||= (e = /* @__PURE__ */ F(e), i.call(r, e));
+			!t && !/* @__PURE__ */ F(n) && !/* @__PURE__ */ Bt(n) && (n = /* @__PURE__ */ I(n));
+			let r = /* @__PURE__ */ I(this), { has: i, get: a } = St(r), o = i.call(r, e);
+			o ||= (e = /* @__PURE__ */ I(e), i.call(r, e));
 			let s = a.call(r, e);
-			return r.set(e, n), o ? D(n, s) && tt(r, "set", e, n, s) : tt(r, "add", e, n), this;
+			return r.set(e, n), o ? D(n, s) && et(r, "set", e, n, s) : et(r, "add", e, n), this;
 		},
 		delete(e) {
-			let t = /* @__PURE__ */ F(this), { has: n, get: r } = Ct(t), i = n.call(t, e);
-			i ||= (e = /* @__PURE__ */ F(e), n.call(t, e));
+			let t = /* @__PURE__ */ I(this), { has: n, get: r } = St(t), i = n.call(t, e);
+			i ||= (e = /* @__PURE__ */ I(e), n.call(t, e));
 			let a = r ? r.call(t, e) : void 0, o = t.delete(e);
-			return i && tt(t, "delete", e, void 0, a), o;
+			return i && et(t, "delete", e, void 0, a), o;
 		},
 		clear() {
-			let e = /* @__PURE__ */ F(this), t = e.size !== 0, n = e.clear();
-			return t && tt(e, "clear", void 0, void 0, void 0), n;
+			let e = /* @__PURE__ */ I(this), t = e.size !== 0, n = e.clear();
+			return t && et(e, "clear", void 0, void 0, void 0), n;
 		}
 	}), [
 		"keys",
@@ -663,15 +663,15 @@ function Et(e, t) {
 		"entries",
 		Symbol.iterator
 	].forEach((r) => {
-		n[r] = wt(r, e, t);
+		n[r] = Ct(r, e, t);
 	}), n;
 }
-function Dt(e, t) {
-	let n = Et(e, t);
+function Et(e, t) {
+	let n = Tt(e, t);
 	return (t, r, i) => r === "__v_isReactive" ? !e : r === "__v_isReadonly" ? e : r === "__v_raw" ? t : Reflect.get(u(n, r) && r in t ? n : t, r, i);
 }
-var Ot = { get: /* @__PURE__ */ Dt(!1, !1) }, kt = { get: /* @__PURE__ */ Dt(!1, !0) }, At = { get: /* @__PURE__ */ Dt(!0, !1) }, jt = /* @__PURE__ */ new WeakMap(), Mt = /* @__PURE__ */ new WeakMap(), Nt = /* @__PURE__ */ new WeakMap(), Pt = /* @__PURE__ */ new WeakMap();
-function Ft(e) {
+var Dt = { get: /* @__PURE__ */ Et(!1, !1) }, Ot = { get: /* @__PURE__ */ Et(!1, !0) }, kt = { get: /* @__PURE__ */ Et(!0, !1) }, At = /* @__PURE__ */ new WeakMap(), jt = /* @__PURE__ */ new WeakMap(), Mt = /* @__PURE__ */ new WeakMap(), Nt = /* @__PURE__ */ new WeakMap();
+function Pt(e) {
 	switch (e) {
 		case "Object":
 		case "Array": return 1;
@@ -683,51 +683,51 @@ function Ft(e) {
 	}
 }
 // @__NO_SIDE_EFFECTS__
+function Ft(e) {
+	return /* @__PURE__ */ Bt(e) ? e : Rt(e, !1, vt, Dt, At);
+}
+// @__NO_SIDE_EFFECTS__
 function It(e) {
-	return /* @__PURE__ */ Vt(e) ? e : zt(e, !1, yt, Ot, jt);
+	return Rt(e, !1, bt, Ot, jt);
 }
 // @__NO_SIDE_EFFECTS__
 function Lt(e) {
-	return zt(e, !1, xt, kt, Mt);
+	return Rt(e, !0, yt, kt, Mt);
 }
-// @__NO_SIDE_EFFECTS__
-function Rt(e) {
-	return zt(e, !0, bt, At, Nt);
-}
-function zt(e, t, n, r, i) {
+function Rt(e, t, n, r, i) {
 	if (!v(e) || e.__v_raw && !(t && e.__v_isReactive) || e.__v_skip || !Object.isExtensible(e)) return e;
 	let a = i.get(e);
 	if (a) return a;
-	let o = Ft(S(e));
+	let o = Pt(S(e));
 	if (o === 0) return e;
 	let s = new Proxy(e, o === 2 ? r : n);
 	return i.set(e, s), s;
 }
 // @__NO_SIDE_EFFECTS__
-function Bt(e) {
-	return /* @__PURE__ */ Vt(e) ? /* @__PURE__ */ Bt(e.__v_raw) : !!(e && e.__v_isReactive);
+function zt(e) {
+	return /* @__PURE__ */ Bt(e) ? /* @__PURE__ */ zt(e.__v_raw) : !!(e && e.__v_isReactive);
 }
 // @__NO_SIDE_EFFECTS__
-function Vt(e) {
+function Bt(e) {
 	return !!(e && e.__v_isReadonly);
 }
 // @__NO_SIDE_EFFECTS__
-function P(e) {
+function F(e) {
 	return !!(e && e.__v_isShallow);
 }
 // @__NO_SIDE_EFFECTS__
-function Ht(e) {
+function Vt(e) {
 	return e ? !!e.__v_raw : !1;
 }
 // @__NO_SIDE_EFFECTS__
-function F(e) {
+function I(e) {
 	let t = e && e.__v_raw;
-	return t ? /* @__PURE__ */ F(t) : e;
+	return t ? /* @__PURE__ */ I(t) : e;
 }
-function Ut(e) {
+function Ht(e) {
 	return !u(e, "__v_skip") && Object.isExtensible(e) && O(e, "__v_skip", !0), e;
 }
-var I = (e) => v(e) ? /* @__PURE__ */ It(e) : e, Wt = (e) => v(e) ? /* @__PURE__ */ Rt(e) : e;
+var Ut = (e) => v(e) ? /* @__PURE__ */ Ft(e) : e, Wt = (e) => v(e) ? /* @__PURE__ */ Lt(e) : e;
 // @__NO_SIDE_EFFECTS__
 function L(e) {
 	return e ? e.__v_isRef === !0 : !1;
@@ -741,14 +741,14 @@ function Kt(e, t) {
 }
 var qt = class {
 	constructor(e, t) {
-		this.dep = new Ye(), this.__v_isRef = !0, this.__v_isShallow = !1, this._rawValue = t ? e : /* @__PURE__ */ F(e), this._value = t ? e : I(e), this.__v_isShallow = t;
+		this.dep = new Je(), this.__v_isRef = !0, this.__v_isShallow = !1, this._rawValue = t ? e : /* @__PURE__ */ I(e), this._value = t ? e : Ut(e), this.__v_isShallow = t;
 	}
 	get value() {
 		return this.dep.track(), this._value;
 	}
 	set value(e) {
-		let t = this._rawValue, n = this.__v_isShallow || /* @__PURE__ */ P(e) || /* @__PURE__ */ Vt(e);
-		e = n ? e : /* @__PURE__ */ F(e), D(e, t) && (this._rawValue = e, this._value = n ? e : I(e), this.dep.trigger());
+		let t = this._rawValue, n = this.__v_isShallow || /* @__PURE__ */ F(e) || /* @__PURE__ */ Bt(e);
+		e = n ? e : /* @__PURE__ */ I(e), D(e, t) && (this._rawValue = e, this._value = n ? e : Ut(e), this.dep.trigger());
 	}
 };
 function R(e) {
@@ -762,7 +762,7 @@ var Jt = {
 	}
 };
 function Yt(e) {
-	return /* @__PURE__ */ Bt(e) ? e : new Proxy(e, Jt);
+	return /* @__PURE__ */ zt(e) ? e : new Proxy(e, Jt);
 }
 // @__NO_SIDE_EFFECTS__
 function Xt(e) {
@@ -772,10 +772,10 @@ function Xt(e) {
 }
 var Zt = class {
 	constructor(e, t, n) {
-		this._object = e, this._defaultValue = n, this.__v_isRef = !0, this._value = void 0, this._key = _(t) ? t : String(t), this._raw = /* @__PURE__ */ F(e);
+		this._object = e, this._defaultValue = n, this.__v_isRef = !0, this._value = void 0, this._key = _(t) ? t : String(t), this._raw = /* @__PURE__ */ I(e);
 		let r = !0, i = e;
 		if (!d(e) || _(this._key) || !w(this._key)) do
-			r = !/* @__PURE__ */ Ht(i) || /* @__PURE__ */ P(i);
+			r = !/* @__PURE__ */ Vt(i) || /* @__PURE__ */ F(i);
 		while (r && (i = i.__v_raw));
 		this._shallow = r;
 	}
@@ -794,7 +794,7 @@ var Zt = class {
 		this._object[this._key] = e;
 	}
 	get dep() {
-		return nt(this._raw, this._key);
+		return tt(this._raw, this._key);
 	}
 };
 function Qt(e, t, n) {
@@ -802,7 +802,7 @@ function Qt(e, t, n) {
 }
 var $t = class {
 	constructor(e, t, n) {
-		this.fn = e, this.setter = t, this._value = void 0, this.dep = new Ye(this), this.__v_isRef = !0, this.deps = void 0, this.depsTail = void 0, this.flags = 16, this.globalVersion = qe - 1, this.next = void 0, this.effect = this, this.__v_isReadonly = !t, this.isSSR = n;
+		this.fn = e, this.setter = t, this._value = void 0, this.dep = new Je(this), this.__v_isRef = !0, this.deps = void 0, this.depsTail = void 0, this.flags = 16, this.globalVersion = Ke - 1, this.next = void 0, this.effect = this, this.__v_isReadonly = !t, this.isSSR = n;
 	}
 	notify() {
 		if (this.flags |= 16, !(this.flags & 8) && M !== this) return Ne(this, !0), !0;
@@ -828,18 +828,18 @@ function an(e, t = !1, n = rn) {
 	}
 }
 function on(e, n, i = t) {
-	let { immediate: a, deep: o, once: s, scheduler: l, augmentJob: u, call: f } = i, p = (e) => o ? e : /* @__PURE__ */ P(e) || o === !1 || o === 0 ? sn(e, 1) : sn(e), m, g, _, v, y = !1, b = !1;
-	if (/* @__PURE__ */ L(e) ? (g = () => e.value, y = /* @__PURE__ */ P(e)) : /* @__PURE__ */ Bt(e) ? (g = () => p(e), y = !0) : d(e) ? (b = !0, y = e.some((e) => /* @__PURE__ */ Bt(e) || /* @__PURE__ */ P(e)), g = () => e.map((e) => {
+	let { immediate: a, deep: o, once: s, scheduler: l, augmentJob: u, call: f } = i, p = (e) => o ? e : /* @__PURE__ */ F(e) || o === !1 || o === 0 ? sn(e, 1) : sn(e), m, g, _, v, y = !1, b = !1;
+	if (/* @__PURE__ */ L(e) ? (g = () => e.value, y = /* @__PURE__ */ F(e)) : /* @__PURE__ */ zt(e) ? (g = () => p(e), y = !0) : d(e) ? (b = !0, y = e.some((e) => /* @__PURE__ */ zt(e) || /* @__PURE__ */ F(e)), g = () => e.map((e) => {
 		if (/* @__PURE__ */ L(e)) return e.value;
-		if (/* @__PURE__ */ Bt(e)) return p(e);
+		if (/* @__PURE__ */ zt(e)) return p(e);
 		if (h(e)) return f ? f(e, 2) : e();
 	})) : g = h(e) ? n ? f ? () => f(e, 2) : e : () => {
 		if (_) {
-			We();
+			Ue();
 			try {
 				_();
 			} finally {
-				Ge();
+				We();
 			}
 		}
 		let t = rn;
@@ -939,11 +939,11 @@ function ln(e, n, r, i = !0) {
 			t = t.parent;
 		}
 		if (o) {
-			We(), cn(o, null, 10, [
+			Ue(), cn(o, null, 10, [
 				e,
 				i,
 				a
-			]), Ge();
+			]), We();
 			return;
 		}
 	}
@@ -1060,12 +1060,12 @@ function kn(e, t, n, r) {
 		let s = i[o];
 		a && (s.oldValue = a[o].value);
 		let c = s.dir[r];
-		c && (We(), z(c, n, 8, [
+		c && (Ue(), z(c, n, 8, [
 			e.el,
 			s,
 			e,
 			t
-		]), Ge());
+		]), We());
 	}
 }
 function An(e, t) {
@@ -1156,7 +1156,7 @@ function qn(e, n, r, a, o = !1) {
 		a.shapeFlag & 512 && a.type.__asyncResolved && a.component.subTree.component && qn(e, n, r, a.component.subTree);
 		return;
 	}
-	let s = a.shapeFlag & 4 ? Sa(a.component) : a.el, l = o ? null : s, { i: f, r: p } = e, m = n && n.r, _ = f.refs === t ? f.refs = {} : f.refs, v = f.setupState, y = /* @__PURE__ */ F(v), b = v === t ? i : (e) => Gn(_, e) ? !1 : u(y, e), x = (e, t) => !(t && Gn(_, t));
+	let s = a.shapeFlag & 4 ? Sa(a.component) : a.el, l = o ? null : s, { i: f, r: p } = e, m = n && n.r, _ = f.refs === t ? f.refs = {} : f.refs, v = f.setupState, y = /* @__PURE__ */ I(v), b = v === t ? i : (e) => Gn(_, e) ? !1 : u(y, e), x = (e, t) => !(t && Gn(_, t));
 	if (m != null && m !== p) {
 		if (Jn(n), g(m)) _[m] = null, b(m) && (v[m] = null);
 		else if (/* @__PURE__ */ L(m)) {
@@ -1224,9 +1224,9 @@ function er(e, t, n, r) {
 function tr(e, t, n = X, r = !1) {
 	if (n) {
 		let i = n[e] || (n[e] = []), a = t.__weh ||= (...r) => {
-			We();
+			Ue();
 			let i = ua(n), a = z(t, n, e, r);
-			return i(), Ge(), a;
+			return i(), We(), a;
 		};
 		return r ? i.unshift(a) : i.push(a), a;
 	}
@@ -1259,9 +1259,9 @@ function _r(e, t) {
 function vr(e, t, n, r) {
 	let i, a = n && n[r], o = d(e);
 	if (o || g(e)) {
-		let n = o && /* @__PURE__ */ Bt(e), r = !1, s = !1;
-		n && (r = !/* @__PURE__ */ P(e), s = /* @__PURE__ */ Vt(e), e = it(e)), i = Array(e.length);
-		for (let n = 0, o = e.length; n < o; n++) i[n] = t(r ? s ? Wt(I(e[n])) : I(e[n]) : e[n], n, void 0, a && a[n]);
+		let n = o && /* @__PURE__ */ zt(e), r = !1, s = !1;
+		n && (r = !/* @__PURE__ */ F(e), s = /* @__PURE__ */ Bt(e), e = rt(e)), i = Array(e.length);
+		for (let n = 0, o = e.length; n < o; n++) i[n] = t(r ? s ? Wt(Ut(e[n])) : Ut(e[n]) : e[n], n, void 0, a && a[n]);
 	} else if (typeof e == "number") {
 		i = Array(e);
 		for (let n = 0; n < e; n++) i[n] = t(n + 1, n, void 0, a && a[n]);
@@ -1338,7 +1338,7 @@ var Sr = (e) => e ? fa(e) ? Sa(e) : Sr(e.parent) : null, Cr = /* @__PURE__ */ s(
 			else Dr && (s[n] = 0);
 		}
 		let d = Cr[n], f, p;
-		if (d) return n === "$attrs" && N(e.attrs, "get", ""), d(e);
+		if (d) return n === "$attrs" && P(e.attrs, "get", ""), d(e);
 		if ((f = c.__cssModules) && (f = f[n])) return f;
 		if (r !== t && u(r, n)) return s[n] = 4, r[n];
 		if (p = l.config.globalProperties, u(p, n)) return p[n];
@@ -1369,7 +1369,7 @@ function Or(e) {
 	}
 	if (a) {
 		let t = a.call(n, n);
-		v(t) && (e.data = /* @__PURE__ */ It(t));
+		v(t) && (e.data = /* @__PURE__ */ Ft(t));
 	}
 	if (Dr = !0, o) for (let e in o) {
 		let t = o[e], a = Ta({
@@ -1687,10 +1687,10 @@ function oi(e, t, n, r = !1) {
 	let i = {}, a = ii();
 	e.propsDefaults = /* @__PURE__ */ Object.create(null), ci(e, t, i, a);
 	for (let t in e.propsOptions[0]) t in i || (i[t] = void 0);
-	n ? e.props = r ? i : /* @__PURE__ */ Lt(i) : e.type.props ? e.props = i : e.props = a, e.attrs = a;
+	n ? e.props = r ? i : /* @__PURE__ */ It(i) : e.type.props ? e.props = i : e.props = a, e.attrs = a;
 }
 function si(e, t, n, r) {
-	let { props: i, attrs: a, vnode: { patchFlag: o } } = e, s = /* @__PURE__ */ F(i), [c] = e.propsOptions, l = !1;
+	let { props: i, attrs: a, vnode: { patchFlag: o } } = e, s = /* @__PURE__ */ I(i), [c] = e.propsOptions, l = !1;
 	if ((r || o > 0) && !(o & 16)) {
 		if (o & 8) {
 			let n = e.vnode.dynamicProps;
@@ -1712,7 +1712,7 @@ function si(e, t, n, r) {
 		for (let a in s) (!t || !u(t, a) && ((r = E(a)) === a || !u(t, r))) && (c ? n && (n[a] !== void 0 || n[r] !== void 0) && (i[a] = li(c, s, a, void 0, e, !0)) : delete i[a]);
 		if (a !== s) for (let e in a) (!t || !u(t, e)) && (delete a[e], l = !0);
 	}
-	l && tt(e.attrs, "set", "");
+	l && et(e.attrs, "set", "");
 }
 function ci(e, n, r, i) {
 	let [a, o] = e.propsOptions, s = !1, c;
@@ -1722,7 +1722,7 @@ function ci(e, n, r, i) {
 		a && u(a, d = T(t)) ? !o || !o.includes(d) ? r[d] = l : (c ||= {})[d] = l : Yr(e.emitsOptions, t) || (!(t in i) || l !== i[t]) && (i[t] = l, s = !0);
 	}
 	if (o) {
-		let n = /* @__PURE__ */ F(r), i = c || t;
+		let n = /* @__PURE__ */ I(r), i = c || t;
 		for (let t = 0; t < o.length; t++) {
 			let s = o[t];
 			r[s] = li(a, n, s, i[s], e, !u(i, s));
@@ -2000,7 +2000,7 @@ function Ci(e, i) {
 	}, ue = (e, t, n) => {
 		t.component = e;
 		let r = e.vnode.props;
-		e.vnode = t, e.next = null, si(e, t.props, r, n), xi(e, t.children, n), We(), Sn(e), Ge();
+		e.vnode = t, e.next = null, si(e, t.props, r, n), xi(e, t.children, n), Ue(), Sn(e), We();
 	}, de = (e, t, n, r, i, a, o, s, c = !1) => {
 		let l = e && e.children, u = e ? e.shapeFlag : 0, d = t.children, { patchFlag: f, shapeFlag: m } = t;
 		if (f > 0) {
@@ -2108,7 +2108,7 @@ function Ci(e, i) {
 		else o(a, t, n);
 	}, k = (e, t, n, r = !1, i = !1) => {
 		let { type: a, props: o, ref: s, children: c, dynamicChildren: l, shapeFlag: u, patchFlag: d, dirs: f, cacheIndex: p, memo: m } = e;
-		if (d === -2 && (i = !1), s != null && (We(), qn(s, null, n, e, !0), Ge()), p != null && (t.renderCache[p] = void 0), u & 256) {
+		if (d === -2 && (i = !1), s != null && (Ue(), qn(s, null, n, e, !0), We()), p != null && (t.renderCache[p] = void 0), u & 256) {
 			t.ctx.deactivate(e);
 			return;
 		}
@@ -2300,13 +2300,13 @@ function Ji(e, t = null, n = null, r = 0, i = null, a = !1) {
 	if (wa(e) && (e = e.__vccOpts), t) {
 		t = Yi(t);
 		let { class: e, style: n } = t;
-		e && !g(e) && (t.class = k(e)), v(n) && (/* @__PURE__ */ Ht(n) && !d(n) && (n = s({}, n)), t.style = ue(n));
+		e && !g(e) && (t.class = k(e)), v(n) && (/* @__PURE__ */ Vt(n) && !d(n) && (n = s({}, n)), t.style = ue(n));
 	}
 	let o = g(e) ? 1 : Mi(e) ? 128 : Bn(e) ? 64 : v(e) ? 4 : h(e) ? 2 : 0;
 	return J(e, t, n, r, i, o, a, !0);
 }
 function Yi(e) {
-	return e ? /* @__PURE__ */ Ht(e) || ai(e) ? s({}, e) : e : null;
+	return e ? /* @__PURE__ */ Vt(e) || ai(e) ? s({}, e) : e : null;
 }
 function Xi(e, t, n = !1, r = !1) {
 	let { props: i, ref: a, patchFlag: o, children: s, transition: c } = e, l = t ? na(i || {}, t) : i, u = {
@@ -2491,9 +2491,9 @@ function ha(e, t) {
 	e.accessCache = /* @__PURE__ */ Object.create(null), e.proxy = new Proxy(e.ctx, Tr);
 	let { setup: r } = n;
 	if (r) {
-		We();
+		Ue();
 		let n = e.setupContext = r.length > 1 ? xa(e) : null, i = ua(e), a = cn(r, e, 0, [e.props, n]), o = y(a);
-		if (Ge(), i(), (o || e.sp) && !Yn(e) && Wn(e), o) {
+		if (We(), i(), (o || e.sp) && !Yn(e) && Wn(e), o) {
 			if (a.then(da, da), t) return a.then((n) => {
 				ga(e, n, t);
 			}).catch((t) => {
@@ -2524,16 +2524,16 @@ function ya(e, t, n) {
 	}
 	{
 		let t = ua(e);
-		We();
+		Ue();
 		try {
 			Or(e);
 		} finally {
-			Ge(), t();
+			We(), t();
 		}
 	}
 }
 var ba = { get(e, t) {
-	return N(e, "get", ""), e[t];
+	return P(e, "get", ""), e[t];
 } };
 function xa(e) {
 	return {
@@ -2546,7 +2546,7 @@ function xa(e) {
 	};
 }
 function Sa(e) {
-	return e.exposed ? e.exposeProxy ||= new Proxy(Yt(Ut(e.exposed)), {
+	return e.exposed ? e.exposeProxy ||= new Proxy(Yt(Ht(e.exposed)), {
 		get(t, n) {
 			if (n in t) return t[n];
 			if (n in Cr) return Cr[n](e);
@@ -2968,7 +2968,7 @@ function Ko(e, t, n, r) {
 }
 var { assign: qo } = Object;
 function Jo() {
-	let e = Te(!0), t = e.run(() => /* @__PURE__ */ Gt({})), n = [], r = [], i = Ut({
+	let e = Te(!0), t = e.run(() => /* @__PURE__ */ Gt({})), n = [], r = [], i = Ht({
 		install(e) {
 			Mo(i), i._a = e, e.provide(No, i), e.config.globalProperties.$pinia = i, r.forEach((e) => n.push(e)), r = [];
 		},
@@ -3002,7 +3002,7 @@ function ts(e, t) {
 	for (let n in t) {
 		if (!t.hasOwnProperty(n)) continue;
 		let r = t[n], i = e[n];
-		Po(i) && Po(r) && e.hasOwnProperty(n) && !/* @__PURE__ */ L(r) && !/* @__PURE__ */ Bt(r) ? e[n] = ts(i, r) : e[n] = r;
+		Po(i) && Po(r) && e.hasOwnProperty(n) && !/* @__PURE__ */ L(r) && !/* @__PURE__ */ zt(r) ? e[n] = ts(i, r) : e[n] = r;
 	}
 	return e;
 }
@@ -3017,7 +3017,7 @@ function as(e) {
 function os(e, t, n, r) {
 	let { state: i, actions: a, getters: o } = t, s = n.state.value[e], c;
 	function l() {
-		return s || (n.state.value[e] = i ? i() : {}), is(/* @__PURE__ */ Xt(n.state.value[e]), a, Object.keys(o || {}).reduce((t, r) => (t[r] = Ut(Ta(() => {
+		return s || (n.state.value[e] = i ? i() : {}), is(/* @__PURE__ */ Xt(n.state.value[e]), a, Object.keys(o || {}).reduce((t, r) => (t[r] = Ht(Ta(() => {
 			Mo(n);
 			let t = n._s.get(e);
 			return o[r].call(t, t);
@@ -3082,7 +3082,7 @@ function ss(e, t, n = {}, r, i, a) {
 			return l instanceof Promise ? l.then((e) => (Zo(a, e), e)).catch((e) => (Zo(o, e), Promise.reject(e))) : (Zo(a, l), l);
 		};
 		return i[$o] = !0, i[es] = n, i;
-	}, y = /* @__PURE__ */ It({
+	}, y = /* @__PURE__ */ Ft({
 		_p: r,
 		$id: e,
 		$onAction: Xo.bind(null, f),
@@ -3104,9 +3104,9 @@ function ss(e, t, n = {}, r, i, a) {
 	let b = (r._a && r._a.runWithContext || Qo)(() => r._e.run(() => (o = Te()).run(() => t({ action: v }))));
 	for (let t in b) {
 		let n = b[t];
-		/* @__PURE__ */ L(n) && !as(n) || /* @__PURE__ */ Bt(n) ? a || (p && rs(n) && (/* @__PURE__ */ L(n) ? n.value = p[t] : ts(n, p[t])), r.state.value[e][t] = n) : typeof n == "function" && (b[t] = v(n, t), s.actions[t] = n);
+		/* @__PURE__ */ L(n) && !as(n) || /* @__PURE__ */ zt(n) ? a || (p && rs(n) && (/* @__PURE__ */ L(n) ? n.value = p[t] : ts(n, p[t])), r.state.value[e][t] = n) : typeof n == "function" && (b[t] = v(n, t), s.actions[t] = n);
 	}
-	return is(y, b), is(/* @__PURE__ */ F(y), b), Object.defineProperty(y, "$state", {
+	return is(y, b), is(/* @__PURE__ */ I(y), b), Object.defineProperty(y, "$state", {
 		get: () => r.state.value[e],
 		set: (e) => {
 			h((t) => {
@@ -3372,7 +3372,7 @@ var us = cs("demo-components", { state: () => ({ cardDemos: ls() }) }), ds = { k
 	getVueComponent() {
 		return ys;
 	}
-}, Cs = .25, ws = 2.5, Ts = .05, Es = {
+}, Cs = .5, ws = .25, Ts = 2.5, Es = .05, Ds = {
 	tiny: 10,
 	ltl: 5,
 	sml: 5,
@@ -3380,7 +3380,7 @@ var us = cs("demo-components", { state: () => ({ cardDemos: ls() }) }), ds = { k
 	lrg: 3,
 	enor: 1,
 	mnst: 1
-}, Ds = {
+}, Os = {
 	tiny: "Tiny",
 	ltl: "Little",
 	sml: "Small",
@@ -3388,7 +3388,7 @@ var us = cs("demo-components", { state: () => ({ cardDemos: ls() }) }), ds = { k
 	lrg: "Large",
 	enor: "Enormous",
 	mnst: "Monstrous"
-}, Os = {
+}, ks = {
 	tiny: .3,
 	ltl: .5,
 	sml: .8,
@@ -3396,7 +3396,7 @@ var us = cs("demo-components", { state: () => ({ cardDemos: ls() }) }), ds = { k
 	lrg: 2,
 	enor: 3,
 	mnst: 4
-}, ks = {
+}, As = {
 	tiny: 1,
 	ltl: 1,
 	sml: 1,
@@ -3404,7 +3404,7 @@ var us = cs("demo-components", { state: () => ({ cardDemos: ls() }) }), ds = { k
 	lrg: 2,
 	enor: 3,
 	mnst: 4
-}, As = {
+}, js = {
 	tiny: [
 		[1, "tiny"],
 		[20, "ltl"],
@@ -3443,10 +3443,10 @@ var us = cs("demo-components", { state: () => ({ cardDemos: ls() }) }), ds = { k
 	enor: [[1, "enor"], [4, "mnst"]],
 	mnst: [[1, "mnst"]]
 };
-function js(e, t) {
+function Ms(e, t) {
 	if (t === 0) return e;
 	let n = e;
-	for (let [r, i] of As[e]) {
+	for (let [r, i] of js[e]) {
 		if (t < r) break;
 		n = i;
 	}
@@ -3454,8 +3454,8 @@ function js(e, t) {
 }
 //#endregion
 //#region src/functions/unit/derive/state.ts
-function Ms(e, t) {
-	let n = e.wounds * e.startingIndividuals, r = Math.min(Math.max(t, 0), n), i = Math.ceil(r / e.wounds), a = Es[e.size], o = Math.ceil(i / a), s = Math.max(o - 1, 0), c = js(e.size, i);
+function Ns(e, t) {
+	let n = e.wounds * e.startingIndividuals, r = Math.min(Math.max(t, 0), n), i = Math.ceil(r / e.wounds), a = Ds[e.size], o = Math.ceil(i / a), s = Math.max(o - 1, 0), c = Ms(e.size, i);
 	return {
 		additionalRanks: s,
 		attacks: i === 0 ? 0 : e.attacks + s,
@@ -3468,12 +3468,12 @@ function Ms(e, t) {
 		ranks: o,
 		size: c,
 		source: e,
-		turningCost: Math.min(ks[c], e.movement)
+		turningCost: Math.min(As[c], e.movement)
 	};
 }
 //#endregion
 //#region src/functions/unit/is-unit-size.ts
-var Ns = [
+var Ps = [
 	"tiny",
 	"ltl",
 	"sml",
@@ -3482,26 +3482,26 @@ var Ns = [
 	"enor",
 	"mnst"
 ];
-function Ps(e) {
-	return typeof e == "string" && Ns.includes(e);
+function Fs(e) {
+	return typeof e == "string" && Ps.includes(e);
 }
 //#endregion
 //#region src/functions/unit/parse-unit-count.ts
-function Fs(e) {
+function Is(e) {
 	let t = typeof e == "number" ? e : Number(String(e).trim());
 	if (!(!Number.isInteger(t) || t < 1)) return t;
 }
 //#endregion
 //#region src/module/unit/document-state.ts
-var Is = `flags.${Z}.unit`;
-function Ls(e) {
+var Ls = `flags.${Z}.unit`, Rs = 1;
+function zs(e) {
 	let t = e.flags[Z];
-	if (!Bs(t)) return;
+	if (!Hs(t)) return;
 	let n = t.unit;
-	if (!Bs(n) || n.schemaVersion !== 1) return;
+	if (!Hs(n) || n.schemaVersion !== 1) return;
 	let r = n.source;
-	if (!Bs(r) || !Ps(r.size)) return;
-	let i = Number(r.attacks), a = r.individualTokenScale === void 0 ? 1 : Number(r.individualTokenScale), o = r.lockRotation, s = Number(r.movement), c = Number(r.wounds), l = r.tokenImage, u = Vs(r.tokenGeometry);
+	if (!Hs(r) || !Fs(r.size)) return;
+	let i = Number(r.attacks), a = r.individualTokenScale === void 0 ? Rs : Number(r.individualTokenScale), o = r.lockRotation, s = Number(r.movement), c = Number(r.wounds), l = r.tokenImage, u = Us(r.tokenGeometry);
 	if (!(!Number.isInteger(i) || i < 1 || !Number.isFinite(a) || a < .25 || a > 2.5 || typeof o != "boolean" || !Number.isFinite(s) || s < 0 || !Number.isFinite(c) || c <= 0 || typeof l != "string" || r.tokenGeometry !== void 0 && !u)) return {
 		schemaVersion: 1,
 		source: {
@@ -3516,27 +3516,27 @@ function Ls(e) {
 		}
 	};
 }
-function Rs(e) {
+function Bs(e) {
 	let t = e.flags[Z];
-	return e.type === "trait" && Bs(t) && Bs(t.unit);
+	return e.type === "trait" && Hs(t) && Hs(t.unit);
 }
-function zs(e) {
-	return Array.from(e.items).find(Rs);
+function Vs(e) {
+	return Array.from(e.items).find(Bs);
 }
 function Q(e) {
-	let t = zs(e);
+	let t = Vs(e);
 	if (!t || t.system.enabled === !1) return;
-	let n = Ls(t), r = Fs(t.system.specification.value);
-	if (!(!n || !r)) return Ms({
+	let n = zs(t), r = Is(t.system.specification.value);
+	if (!(!n || !r)) return Ns({
 		...n.source,
 		startingIndividuals: r
 	}, e.system.status.wounds.value);
 }
-function Bs(e) {
+function Hs(e) {
 	return typeof e == "object" && !!e;
 }
-function Vs(e) {
-	if (!Bs(e)) return;
+function Us(e) {
+	if (!Hs(e)) return;
 	let t = Number(e.height), n = Number(e.scaleX), r = Number(e.scaleY), i = Number(e.width);
 	if (!(!Number.isFinite(t) || t <= 0 || !Number.isFinite(n) || !Number.isFinite(r) || !Number.isFinite(i) || i <= 0)) return {
 		height: t,
@@ -3547,51 +3547,51 @@ function Vs(e) {
 }
 //#endregion
 //#region src/module/unit/effect-api.ts
-function Hs(e, t) {
+function Ws(e, t) {
 	let n = Q(e);
 	n && (t.size = n.size);
 }
-function Us(e, t) {
+function Gs(e, t) {
 	let n = Q(e);
 	n && (t.wounds = n.maximumWounds);
 }
-function Ws(e) {
+function Ks(e) {
 	let t = e;
-	return Xs(t) ? "hidden" : Zs(t) ? "automatic" : Qs(t) ? $s(t) ? "automatic" : "optional" : "hidden";
-}
-function Gs(e, t) {
-	return !!(Q(e)?.rankBonusSL && Ws(t) !== "hidden");
-}
-function Ks(e, t) {
-	return !!(Q(e)?.rankBonusSL && Ws(t) === "automatic");
+	return Qs(t) ? "hidden" : $s(t) ? "automatic" : ec(t) ? tc(t) ? "automatic" : "optional" : "hidden";
 }
 function qs(e, t) {
+	return !!(Q(e)?.rankBonusSL && Ks(t) !== "hidden");
+}
+function Js(e, t) {
+	return !!(Q(e)?.rankBonusSL && Ks(t) === "automatic");
+}
+function Ys(e, t) {
 	let n = Q(e);
-	if (!n || n.rankBonusSL < 1 || Ws(t) === "hidden") return;
+	if (!n || n.rankBonusSL < 1 || Ks(t) === "hidden") return;
 	let r = t.fields, i = Number(r.successBonus);
 	r.successBonus = (Number.isFinite(i) ? i : 0) + n.rankBonusSL;
 }
-var Js = qs;
-function Ys(e) {
+var Xs = Ys;
+function Zs(e) {
 	return Q(e);
 }
-function Xs(e) {
+function Qs(e) {
 	return !!(e.context?.defending || e.actor?.isOpposing || e.actor?.attacker);
 }
-function Zs(e) {
+function $s(e) {
 	return !!(e.weapon || e.type === "weapon" || e.trait?.system?.rollable?.damage);
 }
-function Qs(e) {
+function ec(e) {
 	return e.type !== "characteristic" && e.type !== "skill" ? !1 : (e.fields.characteristic ?? e.skill?.system?.characteristic?.value ?? e.skill?.system?.characteristic?.key ?? e.characteristic) === "fel";
 }
-function $s(e) {
+function tc(e) {
 	if (e.type !== "skill") return !1;
 	let t = (typeof game > "u" ? void 0 : game?.i18n?.localize("NAME.Leadership")) || "Leadership";
 	return [e.skill?.name, e.skill?.baseName].some((e) => e?.localeCompare(t, void 0, { sensitivity: "base" }) === 0);
 }
 //#endregion
 //#region src/module/api/create-module-api.ts
-function ec() {
+function nc() {
 	return {
 		async openDemoComponents() {
 			await new Ss().render(!0);
@@ -3600,40 +3600,40 @@ function ec() {
 			console.log("WFRP4e Drowsy's Content API is available.");
 		},
 		unit: {
-			applyAttackBonus: Js,
-			applyRankBonus: qs,
-			applySize: Hs,
-			applyWounds: Us,
-			getState: Ys,
-			shouldActivateRankBonus: Ks,
-			shouldShowRankBonus: Gs
+			applyAttackBonus: Xs,
+			applyRankBonus: Ys,
+			applySize: Ws,
+			applyWounds: Gs,
+			getState: Zs,
+			shouldActivateRankBonus: Js,
+			shouldShowRankBonus: qs
 		}
 	};
 }
 //#endregion
 //#region src/module/api/register-module-api.ts
-function tc() {
+function rc() {
 	if (!game) throw Error("Foundry game global is unavailable during module API registration.");
 	let e = game.modules.get(Z);
 	if (!e) throw Error(`Foundry module registry entry was not found for ${Z}.`);
-	e.api = ec();
+	e.api = nc();
 }
 //#endregion
 //#region src/functions/unit/validate-unit-configuration.ts
-function nc(e) {
+function ic(e) {
 	let t = [];
-	return (!Number.isInteger(e.startingIndividuals) || e.startingIndividuals < 1) && t.push("Starting individuals must be a positive whole number."), (!Number.isFinite(e.sourceWounds) || e.sourceWounds <= 0) && t.push("Source Wounds must be greater than zero."), (!Number.isInteger(e.sourceAttacks) || e.sourceAttacks < 1) && t.push("Source Attacks must be a positive whole number."), (!Number.isFinite(e.sourceMovement) || e.sourceMovement < 0) && t.push("Source Movement cannot be negative."), Ps(e.sourceSize) || t.push("Source Size is invalid."), (!Number.isFinite(e.individualTokenScale) || e.individualTokenScale < .25 || e.individualTokenScale > 2.5) && t.push("Individual token scale must be between 25% and 250%."), t;
+	return (!Number.isInteger(e.startingIndividuals) || e.startingIndividuals < 1) && t.push("Starting individuals must be a positive whole number."), (!Number.isFinite(e.sourceWounds) || e.sourceWounds <= 0) && t.push("Source Wounds must be greater than zero."), (!Number.isInteger(e.sourceAttacks) || e.sourceAttacks < 1) && t.push("Source Attacks must be a positive whole number."), (!Number.isFinite(e.sourceMovement) || e.sourceMovement < 0) && t.push("Source Movement cannot be negative."), Fs(e.sourceSize) || t.push("Source Size is invalid."), (!Number.isFinite(e.individualTokenScale) || e.individualTokenScale < .25 || e.individualTokenScale > 2.5) && t.push("Individual token scale must be between 25% and 250%."), t;
 }
 //#endregion
 //#region src/functions/unit/derive/wounds-after-reconfiguration.ts
-function rc(e, t, n) {
+function ac(e, t, n) {
 	let r = Math.max(e - t, 0);
 	return Math.max(n - r, 0);
 }
 //#endregion
 //#region src/functions/unit/derive/token-geometry.ts
-function ic(e) {
-	let t = Os[e];
+function oc(e) {
+	let t = ks[e];
 	return t < 1 ? {
 		height: 1,
 		scale: t,
@@ -3646,8 +3646,8 @@ function ic(e) {
 }
 //#endregion
 //#region src/functions/unit/derive/source-token-geometry.ts
-function ac(e) {
-	let t = e.source.tokenGeometry, n = ic(e.source.size);
+function sc(e) {
+	let t = e.source.tokenGeometry, n = oc(e.source.size);
 	return {
 		height: t?.height ?? n.height,
 		lockRotation: e.source.lockRotation,
@@ -3658,12 +3658,12 @@ function ac(e) {
 }
 //#endregion
 //#region src/module/unit/token-geometry.ts
-var oc = "fvtt-wfrp-drowsy-content.unitTokenSync";
-async function sc(e) {
+var cc = "fvtt-wfrp-drowsy-content.unitTokenSync";
+async function lc(e) {
 	let t = Q(e);
 	if (!t) return;
-	let n = ic(t.size);
-	await lc(e, {
+	let n = oc(t.size);
+	await dc(e, {
 		height: n.height,
 		lockRotation: !1,
 		"texture.scaleX": n.scale,
@@ -3671,9 +3671,9 @@ async function sc(e) {
 		width: n.width
 	});
 }
-async function cc(e, t) {
-	let n = ac(t);
-	await lc(e, {
+async function uc(e, t) {
+	let n = sc(t);
+	await dc(e, {
 		height: n.height,
 		lockRotation: n.lockRotation,
 		"texture.scaleX": n.scaleX,
@@ -3681,24 +3681,24 @@ async function cc(e, t) {
 		width: n.width
 	});
 }
-async function lc(e, t) {
+async function dc(e, t) {
 	if (e.isToken && e.token) {
-		await fc(e.token, t);
+		await mc(e.token, t);
 		return;
 	}
-	await Promise.all(e.getActiveTokens().map((e) => fc(e.document, t))), await e.update(Object.fromEntries(Object.entries(t).map(([e, t]) => [`prototypeToken.${e}`, t])), { [oc]: !0 });
+	await Promise.all(e.getActiveTokens().map((e) => mc(e.document, t))), await e.update(Object.fromEntries(Object.entries(t).map(([e, t]) => [`prototypeToken.${e}`, t])), { [cc]: !0 });
 }
-function uc(e) {
-	return !!e[oc];
+function fc(e) {
+	return !!e[cc];
 }
-async function dc(e, t, n, r) {
-	game?.user?.id !== r || uc(n) || !pc(t) || await sc(e);
+async function pc(e, t, n, r) {
+	game?.user?.id !== r || fc(n) || !hc(t) || await lc(e);
 }
-async function fc(e, t) {
+async function mc(e, t) {
 	let n = t["texture.scaleX"];
 	e.width === t.width && e.height === t.height && e.lockRotation === t.lockRotation && e.texture.scaleX === n && e.texture.scaleY === t["texture.scaleY"] || await e.update(t);
 }
-function pc(e) {
+function hc(e) {
 	if ("system.status.wounds.value" in e) return !0;
 	let t = e.system;
 	if (typeof t != "object" || !t) return !1;
@@ -3709,30 +3709,30 @@ function pc(e) {
 }
 //#endregion
 //#region src/module/unit/lifecycle.ts
-var mc = `${Z}.unitUpdate`, hc = `${Z}.previousUnitConfiguration`, gc = `${Z}.managedUnitUpdate`;
-function _c(e) {
-	if (!Rs(e) || !e.parent) return;
+var gc = `${Z}.unitUpdate`, _c = `${Z}.previousUnitConfiguration`, vc = `${Z}.managedUnitUpdate`;
+function yc(e) {
+	if (!Bs(e) || !e.parent) return;
 	let t = e.parent;
-	if (t.type !== "creature" && t.type !== "npc") return Dc("The Unit trait can only be added to Creature and NPC actors."), !1;
-	if (zs(t)) return Dc(`${t.name} already has a Unit trait.`), !1;
-	let n = Fs(e.system.specification.value);
-	if (!n) return Dc("A Unit must begin with a positive whole number of individuals."), !1;
+	if (t.type !== "creature" && t.type !== "npc") return kc("The Unit trait can only be added to Creature and NPC actors."), !1;
+	if (Vs(t)) return kc(`${t.name} already has a Unit trait.`), !1;
+	let n = Is(e.system.specification.value);
+	if (!n) return kc("A Unit must begin with a positive whole number of individuals."), !1;
 	let r = t.system.details.size.value;
-	if (!Ps(r)) return Dc(`Cannot create a Unit from unsupported source Size “${r}”.`), !1;
-	let i = t.isToken && t.token ? t.token : t.prototypeToken, a = Number(t.system.details.move.value), o = Number(t.system.status.wounds.max), s = nc({
-		individualTokenScale: 1,
+	if (!Fs(r)) return kc(`Cannot create a Unit from unsupported source Size “${r}”.`), !1;
+	let i = t.isToken && t.token ? t.token : t.prototypeToken, a = Number(t.system.details.move.value), o = Number(t.system.status.wounds.max), s = ic({
+		individualTokenScale: Cs,
 		sourceAttacks: 1,
 		sourceMovement: a,
 		sourceSize: r,
 		sourceWounds: o,
 		startingIndividuals: n
 	});
-	if (s.length > 0) return Dc(`Cannot form this Unit. ${s.join(" ")}`), !1;
+	if (s.length > 0) return kc(`Cannot form this Unit. ${s.join(" ")}`), !1;
 	let c = {
 		schemaVersion: 1,
 		source: {
 			attacks: 1,
-			individualTokenScale: 1,
+			individualTokenScale: Cs,
 			lockRotation: i.lockRotation,
 			movement: a,
 			size: r,
@@ -3746,89 +3746,89 @@ function _c(e) {
 			wounds: o
 		}
 	};
-	e.updateSource({ [Is]: c });
+	e.updateSource({ [Ls]: c });
 }
-async function vc(e, t) {
-	if (!Rs(e) || !e.parent || !Ec(t)) return;
-	let n = Ls(e), r = Fs(e.system.specification.value);
+async function bc(e, t) {
+	if (!Bs(e) || !e.parent || !Oc(t)) return;
+	let n = zs(e), r = Is(e.system.specification.value);
 	if (!n || !r) return;
 	let i = n.source.wounds * r;
 	await e.parent.update({
 		"system.status.wounds.max": i,
 		"system.status.wounds.value": i,
 		"prototypeToken.lockRotation": !1
-	}, { [mc]: !0 }), await sc(e.parent), Oc(`${e.parent.name} formed a Unit of ${r} individuals.`);
+	}, { [gc]: !0 }), await lc(e.parent), Ac(`${e.parent.name} formed a Unit of ${r} individuals.`);
 }
-function yc(e, t, n) {
-	if (!Rs(e)) return;
-	if (Tc(t)) return Dc("A Unit cannot be disabled. Delete the trait to restore its source creature."), !1;
-	let r = wc(t);
-	if (!(r === void 0 && !xc(t))) {
-		if (r !== void 0 && !Fs(r)) return Dc("A Unit must contain a positive whole number of starting individuals."), !1;
-		n[hc] = {
-			count: Fs(e.system.specification.value),
-			stored: Ls(e)
+function xc(e, t, n) {
+	if (!Bs(e)) return;
+	if (Dc(t)) return kc("A Unit cannot be disabled. Delete the trait to restore its source creature."), !1;
+	let r = Ec(t);
+	if (!(r === void 0 && !Cc(t))) {
+		if (r !== void 0 && !Is(r)) return kc("A Unit must contain a positive whole number of starting individuals."), !1;
+		n[_c] = {
+			count: Is(e.system.specification.value),
+			stored: zs(e)
 		};
 	}
 }
-async function bc(e, t, n, r) {
-	if (!Rs(e) || !e.parent || !Ec(r) || n[gc] || wc(t) === void 0 && !xc(t)) return;
-	let i = n[hc];
-	if (!Sc(i)) return;
-	let a = i.count, o = Fs(e.system.specification.value), s = Ls(e);
+async function Sc(e, t, n, r) {
+	if (!Bs(e) || !e.parent || !Oc(r) || n[vc] || Ec(t) === void 0 && !Cc(t)) return;
+	let i = n[_c];
+	if (!wc(i)) return;
+	let a = i.count, o = Is(e.system.specification.value), s = zs(e);
 	if (!o || !s) return;
 	let c = i.stored.source.wounds * a, l = s.source.wounds * o;
 	await e.parent.update({
 		"system.status.wounds.max": l,
-		"system.status.wounds.value": rc(c, e.parent.system.status.wounds.value, l)
-	}, { [mc]: !0 }), await sc(e.parent);
+		"system.status.wounds.value": ac(c, e.parent.system.status.wounds.value, l)
+	}, { [gc]: !0 }), await lc(e.parent);
 }
-function xc(e) {
-	if (Is in e) return !0;
+function Cc(e) {
+	if (Ls in e) return !0;
 	let t = e.flags;
 	if (typeof t != "object" || !t) return !1;
 	let n = t[Z];
 	return typeof n == "object" && !!n && "unit" in n;
 }
-function Sc(e) {
+function wc(e) {
 	if (typeof e != "object" || !e) return !1;
 	let t = e;
 	return !!(t.count && t.stored);
 }
-async function Cc(e, t) {
-	if (!Rs(e) || !e.parent || !Ec(t)) return;
-	let n = Ls(e);
+async function Tc(e, t) {
+	if (!Bs(e) || !e.parent || !Oc(t)) return;
+	let n = zs(e);
 	n && (await e.parent.update({
 		"system.status.wounds.max": n.source.wounds,
 		"system.status.wounds.value": Math.min(e.parent.system.status.wounds.value, n.source.wounds)
-	}, { [mc]: !0 }), await cc(e.parent, n));
+	}, { [gc]: !0 }), await uc(e.parent, n));
 }
-function wc(e) {
+function Ec(e) {
 	if ("system.specification.value" in e) return e["system.specification.value"];
 	let t = e.system;
 	if (typeof t != "object" || !t) return;
 	let n = t.specification;
 	if (!(typeof n != "object" || !n)) return n.value;
 }
-function Tc(e) {
+function Dc(e) {
 	if (e["system.disabled"] === !0 || e["system.enabled"] === !1) return !0;
 	let t = e.system;
 	if (typeof t != "object" || !t) return !1;
 	let n = t;
 	return n.disabled === !0 || n.enabled === !1;
 }
-function Ec(e) {
+function Oc(e) {
 	return game?.user?.id === e;
 }
-function Dc(e) {
+function kc(e) {
 	ui.notifications.error(e);
 }
-function Oc(e) {
+function Ac(e) {
 	ui.notifications.info(e);
 }
 //#endregion
 //#region src/functions/unit/derive/formation-layout.ts
-function kc({ height: e, individuals: t, startX: n, startY: r, width: i }) {
+function jc({ height: e, individuals: t, startX: n, startY: r, width: i }) {
 	if (t < 1) return [];
 	let a = Math.ceil(Math.sqrt(t)), o = Math.ceil(t / a), s = i / a, c = e / o;
 	return Array.from({ length: t }, (e, t) => {
@@ -3843,8 +3843,8 @@ function kc({ height: e, individuals: t, startX: n, startY: r, width: i }) {
 }
 //#endregion
 //#region src/functions/unit/derive/individual-token-size.ts
-function Ac({ availableHeight: e, availableWidth: t, currentSize: n, imageHeight: r, imageWidth: i, source: a }) {
-	let o = ic(a.size), s = (a.tokenGeometry?.width ?? o.width) * Math.abs(a.tokenGeometry?.scaleX ?? o.scale), c = (a.tokenGeometry?.height ?? o.height) * Math.abs(a.tokenGeometry?.scaleY ?? o.scale), l = ic(n), u = l.width * l.scale, d = l.height * l.scale, f = s / u * t * a.individualTokenScale, p = c / d * e * a.individualTokenScale, m = i / r;
+function Mc({ availableHeight: e, availableWidth: t, currentSize: n, imageHeight: r, imageWidth: i, source: a }) {
+	let o = oc(a.size), s = (a.tokenGeometry?.width ?? o.width) * Math.abs(a.tokenGeometry?.scaleX ?? o.scale), c = (a.tokenGeometry?.height ?? o.height) * Math.abs(a.tokenGeometry?.scaleY ?? o.scale), l = oc(n), u = l.width * l.scale, d = l.height * l.scale, f = s / u * t * a.individualTokenScale, p = c / d * e * a.individualTokenScale, m = i / r;
 	return m > f / p ? {
 		height: f / m,
 		width: f
@@ -3855,62 +3855,62 @@ function Ac({ availableHeight: e, availableWidth: t, currentSize: n, imageHeight
 }
 //#endregion
 //#region src/module/unit/token-mosaic.ts
-var $ = 512, jc = 26, Mc = 22, Nc = /* @__PURE__ */ new WeakMap(), Pc = /* @__PURE__ */ new WeakMap();
-async function Fc(e) {
+var $ = 512, Nc = 26, Pc = 22, Fc = /* @__PURE__ */ new WeakMap(), Ic = /* @__PURE__ */ new WeakMap();
+async function Lc(e) {
 	let t = e.actor ? Q(e.actor) : void 0;
 	if (!t) {
-		Lc(e);
+		zc(e);
 		return;
 	}
-	let n = Vc(t), r = Nc.get(e);
+	let n = Uc(t), r = Fc.get(e);
 	if (r?.key === n) {
 		e.mesh.texture = r.texture;
 		return;
 	}
-	let i = (Pc.get(e) ?? 0) + 1;
-	Pc.set(e, i);
+	let i = (Ic.get(e) ?? 0) + 1;
+	Ic.set(e, i);
 	try {
-		let a = await zc(t);
-		if (Pc.get(e) !== i) {
+		let a = await Vc(t);
+		if (Ic.get(e) !== i) {
 			a.destroy(!0);
 			return;
 		}
 		let o = r?.originalMeshTexture ?? e.mesh.texture;
-		Rc(e), e.mesh.texture = a, Nc.set(e, {
+		Bc(e), e.mesh.texture = a, Fc.set(e, {
 			generation: i,
 			key: n,
 			originalMeshTexture: o,
 			texture: a
 		});
 	} catch (n) {
-		console.error(`Could not render Unit token mosaic from ${t.source.tokenImage}.`, n), Pc.get(e) === i && Rc(e);
+		console.error(`Could not render Unit token mosaic from ${t.source.tokenImage}.`, n), Ic.get(e) === i && Bc(e);
 	}
 }
-async function Ic(e) {
-	await Promise.all(e.getActiveTokens().map(Fc));
+async function Rc(e) {
+	await Promise.all(e.getActiveTokens().map(Lc));
 }
-function Lc(e) {
-	Pc.set(e, (Pc.get(e) ?? 0) + 1), Rc(e);
+function zc(e) {
+	Ic.set(e, (Ic.get(e) ?? 0) + 1), Bc(e);
 }
-function Rc(e) {
-	let t = Nc.get(e);
-	t && (e.mesh.texture = t.originalMeshTexture, t.texture.destroy(!0), Nc.delete(e));
+function Bc(e) {
+	let t = Fc.get(e);
+	t && (e.mesh.texture = t.originalMeshTexture, t.texture.destroy(!0), Fc.delete(e));
 }
-async function zc(e) {
-	let t = await Kc(e.source.tokenImage), n = document.createElement("canvas");
+async function Vc(e) {
+	let t = await Jc(e.source.tokenImage), n = document.createElement("canvas");
 	n.width = $, n.height = $;
 	let r = n.getContext("2d");
 	if (!r) throw Error("The browser did not provide a 2D canvas context.");
-	return Hc(r), e.currentIndividuals > 0 ? Bc(r, t, e) : Wc(r), Uc(r), Gc(r, e.currentIndividuals), PIXI.Texture.from(n);
+	return Wc(r), e.currentIndividuals > 0 ? Hc(r, t, e) : Kc(r), Gc(r), qc(r, e.currentIndividuals), PIXI.Texture.from(n);
 }
-function Bc(e, t, n) {
-	let r = n.currentIndividuals, i = $ - Mc * 2, a = $ - Mc * 2 - jc, o = kc({
+function Hc(e, t, n) {
+	let r = n.currentIndividuals, i = $ - Pc * 2, a = $ - Pc * 2 - Nc, o = jc({
 		height: a,
 		individuals: r,
-		startX: Mc,
+		startX: Pc,
 		startY: 48,
 		width: i
-	}), s = Ac({
+	}), s = Mc({
 		availableHeight: a,
 		availableWidth: i,
 		currentSize: n.size,
@@ -3920,7 +3920,7 @@ function Bc(e, t, n) {
 	});
 	for (let n of o) e.drawImage(t, n.x - s.width / 2, n.y - s.height / 2, Math.max(s.width, .5), Math.max(s.height, .5));
 }
-function Vc(e) {
+function Uc(e) {
 	let t = e.source.tokenGeometry;
 	return [
 		e.source.tokenImage,
@@ -3934,19 +3934,19 @@ function Vc(e) {
 		t?.scaleY
 	].join("|");
 }
-function Hc(e) {
+function Wc(e) {
 	e.fillStyle = "rgba(33, 24, 19, 0.82)", e.fillRect(0, 0, $, $), e.strokeStyle = "rgba(217, 164, 79, 0.9)", e.lineWidth = 8, e.strokeRect(8, 8, $ - 16, $ - 16);
 }
-function Uc(e) {
+function Gc(e) {
 	e.fillStyle = "#d9a44f", e.beginPath(), e.moveTo($ / 2, 8), e.lineTo($ / 2 - 24, 38), e.lineTo(280, 38), e.closePath(), e.fill();
 }
-function Wc(e) {
+function Kc(e) {
 	e.strokeStyle = "#782e22", e.lineCap = "round", e.lineWidth = 38, e.beginPath(), e.moveTo(130, 130), e.lineTo(382, 382), e.moveTo(382, 130), e.lineTo(130, 382), e.stroke();
 }
-function Gc(e, t) {
+function qc(e, t) {
 	e.fillStyle = "rgba(33, 24, 19, 0.9)", e.fillRect($ - 114, $ - 60, 94, 40), e.fillStyle = "#f1e1ce", e.font = "bold 28px sans-serif", e.textAlign = "right", e.textBaseline = "middle", e.fillText(String(t), $ - 30, $ - 40);
 }
-function Kc(e) {
+function Jc(e) {
 	return new Promise((t, n) => {
 		let r = new Image();
 		r.addEventListener("load", () => t(r), { once: !0 }), r.addEventListener("error", () => n(/* @__PURE__ */ Error(`Unable to load ${e}.`)), { once: !0 }), r.src = e;
@@ -3954,25 +3954,32 @@ function Kc(e) {
 }
 //#endregion
 //#region src/module/unit/register-hooks.ts
-function qc() {
-	Hooks.on("preCreateItem", (...e) => _c(e[0])), Hooks.on("createItem", (...e) => vc(e[0], e[3])), Hooks.on("preUpdateItem", (...e) => yc(e[0], e[1], e[2])), Hooks.on("updateItem", (...e) => bc(e[0], e[1], e[2], e[3])), Hooks.on("deleteItem", (...e) => Cc(e[0], e[2])), Hooks.on("updateActor", (...e) => dc(e[0], e[1], e[2], e[3])), Hooks.on("refreshToken", (...e) => Fc(e[0])), Hooks.on("destroyToken", (...e) => Lc(e[0]));
+function Yc() {
+	Hooks.on("preCreateItem", (...e) => yc(e[0])), Hooks.on("createItem", (...e) => bc(e[0], e[3])), Hooks.on("preUpdateItem", (...e) => xc(e[0], e[1], e[2])), Hooks.on("updateItem", (...e) => Sc(e[0], e[1], e[2], e[3])), Hooks.on("deleteItem", (...e) => Tc(e[0], e[2])), Hooks.on("updateActor", (...e) => pc(e[0], e[1], e[2], e[3])), Hooks.on("refreshToken", (...e) => Lc(e[0])), Hooks.on("destroyToken", (...e) => zc(e[0]));
+}
+//#endregion
+//#region src/functions/unit/derive/individual-adjustment.ts
+function Xc(e, t, n, r) {
+	return Math.min(Math.max(e + t * r, 0), n);
 }
 //#endregion
 //#region src/functions/unit/map-unit-sheet-context.ts
-function Jc(e) {
+function Zc(e) {
 	return e ? {
 		active: !0,
 		attacks: e.attacks,
+		canKillIndividual: e.currentIndividuals > 0,
+		canReviveIndividual: e.currentIndividuals < e.source.startingIndividuals,
 		currentIndividuals: e.currentIndividuals,
 		currentWounds: e.currentWounds,
 		destroyed: e.destroyed,
 		maximumWounds: e.maximumWounds,
 		rankBonusSL: e.rankBonusSL,
 		ranks: e.ranks,
-		size: Ds[e.size],
+		size: Os[e.size],
 		sourceAttacks: e.source.attacks,
 		sourceMovement: e.source.movement,
-		sourceSize: Ds[e.source.size],
+		sourceSize: Os[e.source.size],
 		sourceWounds: e.source.wounds,
 		startingIndividuals: e.source.startingIndividuals,
 		turningCost: e.turningCost
@@ -3980,9 +3987,9 @@ function Jc(e) {
 }
 //#endregion
 //#region src/state/apps/unit-manager/unit-manager-store.ts
-var Yc = cs("unit-manager", () => {
-	let e = /* @__PURE__ */ Gt(), t = /* @__PURE__ */ Gt(""), n = /* @__PURE__ */ Gt(!1), r = /* @__PURE__ */ It({
-		individualTokenScale: 1,
+var Qc = cs("unit-manager", () => {
+	let e = /* @__PURE__ */ Gt(), t = /* @__PURE__ */ Gt(""), n = /* @__PURE__ */ Gt(!1), r = /* @__PURE__ */ Ft({
+		individualTokenScale: Cs,
 		sourceAttacks: 1,
 		sourceMovement: 4,
 		sourceSize: "avg",
@@ -4004,19 +4011,19 @@ var Yc = cs("unit-manager", () => {
 		unit: e,
 		woundPercentage: i
 	};
-}), Xc = { class: "tw:text-2xl tw:font-semibold" }, Zc = {
+}), $c = { class: "tw:text-2xl tw:font-semibold" }, el = {
 	key: 0,
 	class: "tw:dui-alert tw:dui-alert-error",
 	role: "alert"
-}, Qc = {
+}, tl = {
 	key: 1,
 	class: "tw:dui-alert tw:dui-alert-error",
 	role: "alert"
-}, $c = { class: "tw:dui-stats tw:dui-stats-horizontal tw:w-full" }, el = { class: "tw:dui-stat" }, tl = { class: "tw:dui-stat-value" }, nl = { class: "tw:dui-stat-desc" }, rl = { class: "tw:dui-stat" }, il = { class: "tw:dui-stat-value" }, al = { class: "tw:dui-stat-desc" }, ol = { class: "tw:dui-stat" }, sl = { class: "tw:dui-stat-value" }, cl = { class: "tw:dui-stat-desc" }, ll = { class: "tw:text-lg tw:font-semibold" }, ul = { class: "tw:text-lg tw:font-semibold" }, dl = { class: "tw:text-lg tw:font-semibold" }, fl = ["value"], pl = { class: "tw:dui-fieldset" }, ml = { class: "tw:dui-fieldset" }, hl = ["value"], gl = { class: "tw:dui-fieldset" }, _l = { class: "tw:dui-fieldset" }, vl = { class: "tw:dui-fieldset" }, yl = { class: "tw:dui-fieldset tw:md:col-span-2" }, bl = { class: "tw:flex tw:items-center tw:gap-3" }, xl = [
+}, nl = { class: "tw:dui-stats tw:dui-stats-horizontal tw:w-full" }, rl = { class: "tw:dui-stat" }, il = { class: "tw:dui-stat-value" }, al = { class: "tw:dui-stat-desc" }, ol = { class: "tw:dui-stat" }, sl = { class: "tw:dui-stat-value" }, cl = { class: "tw:dui-stat-desc" }, ll = { class: "tw:dui-stat" }, ul = { class: "tw:dui-stat-value" }, dl = { class: "tw:dui-stat-desc" }, fl = { class: "tw:text-lg tw:font-semibold" }, pl = { class: "tw:text-lg tw:font-semibold" }, ml = { class: "tw:text-lg tw:font-semibold" }, hl = ["value"], gl = { class: "tw:dui-fieldset" }, _l = { class: "tw:dui-fieldset" }, vl = ["value"], yl = { class: "tw:dui-fieldset" }, bl = { class: "tw:dui-fieldset" }, xl = { class: "tw:dui-fieldset" }, Sl = { class: "tw:dui-fieldset tw:md:col-span-2" }, Cl = { class: "tw:flex tw:items-center tw:gap-3" }, wl = [
 	"max",
 	"min",
 	"step"
-], Sl = { class: "tw:w-14 tw:text-right tw:font-semibold tw:tabular-nums" }, Cl = ["disabled"], wl = /* @__PURE__ */ Un({
+], Tl = { class: "tw:w-14 tw:text-right tw:font-semibold tw:tabular-nums" }, El = ["disabled"], Dl = /* @__PURE__ */ Un({
 	__name: "UnitManagerApp",
 	props: {
 		actorName: {},
@@ -4024,9 +4031,9 @@ var Yc = cs("unit-manager", () => {
 		save: { type: Function }
 	},
 	setup(e) {
-		let t = e, n = Yc();
+		let t = e, n = Qc();
 		n.initialize(t.initialState);
-		let r = Object.entries(Ds), i = Ta(() => n.unit), a = Ta(() => Math.round(n.configuration.individualTokenScale * 100));
+		let r = Object.entries(Os), i = Ta(() => n.unit), a = Ta(() => Math.round(n.configuration.individualTokenScale * 100));
 		async function o() {
 			n.saving = !0, n.error = "";
 			try {
@@ -4044,24 +4051,24 @@ var Yc = cs("unit-manager", () => {
 			onSubmit: Co(o, ["prevent"])
 		}, {
 			default: H(() => [
-				J("header", null, [J("h1", Xc, A(e.actorName) + " Unit", 1), s[6] ||= J("p", { class: "tw:text-sm tw:opacity-75" }, " Current values respond to Wounds. Source values remain fixed until you save changes here. ", -1)]),
-				i.value.destroyed ? (q(), Hi("div", Zc, [...s[7] ||= [J("span", null, "This Unit has no remaining individuals and is destroyed.", -1)]])) : Qi("", !0),
-				R(n).error ? (q(), Hi("div", Qc, [J("span", null, A(R(n).error), 1)])) : Qi("", !0),
-				J("div", $c, [
-					J("div", el, [
-						s[8] ||= J("div", { class: "tw:dui-stat-title" }, "Individuals", -1),
-						J("div", tl, A(i.value.currentIndividuals), 1),
-						J("div", nl, "of " + A(i.value.source.startingIndividuals), 1)
-					]),
+				J("header", null, [J("h1", $c, A(e.actorName) + " Unit", 1), s[6] ||= J("p", { class: "tw:text-sm tw:opacity-75" }, " Current values respond to Wounds. Source values remain fixed until you save changes here. ", -1)]),
+				i.value.destroyed ? (q(), Hi("div", el, [...s[7] ||= [J("span", null, "This Unit has no remaining individuals and is destroyed.", -1)]])) : Qi("", !0),
+				R(n).error ? (q(), Hi("div", tl, [J("span", null, A(R(n).error), 1)])) : Qi("", !0),
+				J("div", nl, [
 					J("div", rl, [
-						s[9] ||= J("div", { class: "tw:dui-stat-title" }, "Ranks", -1),
-						J("div", il, A(i.value.ranks), 1),
-						J("div", al, A(i.value.rankIncrement) + " individuals each", 1)
+						s[8] ||= J("div", { class: "tw:dui-stat-title" }, "Individuals", -1),
+						J("div", il, A(i.value.currentIndividuals), 1),
+						J("div", al, "of " + A(i.value.source.startingIndividuals), 1)
 					]),
 					J("div", ol, [
+						s[9] ||= J("div", { class: "tw:dui-stat-title" }, "Ranks", -1),
+						J("div", sl, A(i.value.ranks), 1),
+						J("div", cl, A(i.value.rankIncrement) + " individuals each", 1)
+					]),
+					J("div", ll, [
 						s[10] ||= J("div", { class: "tw:dui-stat-title" }, "Attacks", -1),
-						J("div", sl, A(i.value.attacks), 1),
-						J("div", cl, " +" + A(i.value.rankBonusSL) + " SL after successful eligible Tests ", 1)
+						J("div", ul, A(i.value.attacks), 1),
+						J("div", dl, " +" + A(i.value.rankBonusSL) + " SL after successful eligible Tests ", 1)
 					])
 				]),
 				Y(hs, {
@@ -4075,9 +4082,9 @@ var Yc = cs("unit-manager", () => {
 							gap: "sm"
 						}, {
 							default: H(() => [
-								J("div", null, [s[11] ||= J("div", { class: "tw:text-xs tw:uppercase tw:opacity-60" }, "Wounds", -1), J("div", ll, A(i.value.currentWounds) + " / " + A(i.value.maximumWounds), 1)]),
-								J("div", null, [s[12] ||= J("div", { class: "tw:text-xs tw:uppercase tw:opacity-60" }, "Unit Size", -1), J("div", ul, A(R(Ds)[i.value.size]), 1)]),
-								J("div", null, [s[13] ||= J("div", { class: "tw:text-xs tw:uppercase tw:opacity-60" }, "Turning Cost", -1), J("div", dl, A(i.value.turningCost) + " Movement", 1)])
+								J("div", null, [s[11] ||= J("div", { class: "tw:text-xs tw:uppercase tw:opacity-60" }, "Wounds", -1), J("div", fl, A(i.value.currentWounds) + " / " + A(i.value.maximumWounds), 1)]),
+								J("div", null, [s[12] ||= J("div", { class: "tw:text-xs tw:uppercase tw:opacity-60" }, "Unit Size", -1), J("div", pl, A(R(Os)[i.value.size]), 1)]),
+								J("div", null, [s[13] ||= J("div", { class: "tw:text-xs tw:uppercase tw:opacity-60" }, "Turning Cost", -1), J("div", ml, A(i.value.turningCost) + " Movement", 1)])
 							]),
 							_: 1
 						}),
@@ -4085,7 +4092,7 @@ var Yc = cs("unit-manager", () => {
 							class: "tw:dui-progress tw:w-full",
 							max: 100,
 							value: R(n).woundPercentage
-						}, null, 8, fl),
+						}, null, 8, hl),
 						s[14] ||= J("p", { class: "tw:text-xs tw:opacity-70" }, " Change current Wounds on the actor sheet. A normal 180° turn costs twice the displayed Turning Cost; Directed Manoeuvre can reduce it to one cost. Movement spending, manoeuvre Tests, Attacks used, and flank or rear bonuses remain manual. ", -1)
 					]),
 					_: 1
@@ -4098,13 +4105,13 @@ var Yc = cs("unit-manager", () => {
 					actions: H(() => [J("button", {
 						class: "tw:dui-btn tw:dui-btn-primary tw:dui-btn-sm",
 						disabled: R(n).saving
-					}, A(R(n).saving ? "Saving…" : "Save Unit"), 9, Cl)]),
+					}, A(R(n).saving ? "Saving…" : "Save Unit"), 9, El)]),
 					default: H(() => [Y(_s, {
 						columns: "two",
 						gap: "sm"
 					}, {
 						default: H(() => [
-							J("fieldset", pl, [s[15] ||= J("legend", { class: "tw:dui-fieldset-legend" }, "Starting individuals", -1), On(J("input", {
+							J("fieldset", gl, [s[15] ||= J("legend", { class: "tw:dui-fieldset-legend" }, "Starting individuals", -1), On(J("input", {
 								"onUpdate:modelValue": s[0] ||= (e) => R(n).configuration.startingIndividuals = e,
 								class: "tw:dui-input tw:dui-input-sm tw:w-full",
 								min: "1",
@@ -4117,14 +4124,14 @@ var Yc = cs("unit-manager", () => {
 								void 0,
 								{ number: !0 }
 							]])]),
-							J("fieldset", ml, [s[16] ||= J("legend", { class: "tw:dui-fieldset-legend" }, "Source Size", -1), On(J("select", {
+							J("fieldset", _l, [s[16] ||= J("legend", { class: "tw:dui-fieldset-legend" }, "Source Size", -1), On(J("select", {
 								"onUpdate:modelValue": s[1] ||= (e) => R(n).configuration.sourceSize = e,
 								class: "tw:dui-select tw:dui-select-sm tw:w-full"
 							}, [(q(!0), Hi(G, null, vr(R(r), ([e, t]) => (q(), Hi("option", {
 								key: e,
 								value: e
-							}, A(t), 9, hl))), 128))], 512), [[vo, R(n).configuration.sourceSize]])]),
-							J("fieldset", gl, [s[17] ||= J("legend", { class: "tw:dui-fieldset-legend" }, "Source Wounds", -1), On(J("input", {
+							}, A(t), 9, vl))), 128))], 512), [[vo, R(n).configuration.sourceSize]])]),
+							J("fieldset", yl, [s[17] ||= J("legend", { class: "tw:dui-fieldset-legend" }, "Source Wounds", -1), On(J("input", {
 								"onUpdate:modelValue": s[2] ||= (e) => R(n).configuration.sourceWounds = e,
 								class: "tw:dui-input tw:dui-input-sm tw:w-full",
 								min: "0.01",
@@ -4137,7 +4144,7 @@ var Yc = cs("unit-manager", () => {
 								void 0,
 								{ number: !0 }
 							]])]),
-							J("fieldset", _l, [
+							J("fieldset", bl, [
 								s[18] ||= J("legend", { class: "tw:dui-fieldset-legend" }, "Source Attacks", -1),
 								On(J("input", {
 									"onUpdate:modelValue": s[3] ||= (e) => R(n).configuration.sourceAttacks = e,
@@ -4154,7 +4161,7 @@ var Yc = cs("unit-manager", () => {
 								]]),
 								s[19] ||= J("p", { class: "tw:dui-label" }, "WFRP has no native Attacks field, so Unit records it here.", -1)
 							]),
-							J("fieldset", vl, [s[20] ||= J("legend", { class: "tw:dui-fieldset-legend" }, "Source Movement", -1), On(J("input", {
+							J("fieldset", xl, [s[20] ||= J("legend", { class: "tw:dui-fieldset-legend" }, "Source Movement", -1), On(J("input", {
 								"onUpdate:modelValue": s[4] ||= (e) => R(n).configuration.sourceMovement = e,
 								class: "tw:dui-input tw:dui-input-sm tw:w-full",
 								min: "0",
@@ -4167,22 +4174,22 @@ var Yc = cs("unit-manager", () => {
 								void 0,
 								{ number: !0 }
 							]])]),
-							J("fieldset", yl, [
+							J("fieldset", Sl, [
 								s[21] ||= J("legend", { class: "tw:dui-fieldset-legend" }, "Individual token scale", -1),
-								J("div", bl, [On(J("input", {
+								J("div", Cl, [On(J("input", {
 									"onUpdate:modelValue": s[5] ||= (e) => R(n).configuration.individualTokenScale = e,
 									"aria-label": "Individual token scale",
 									class: "tw:dui-range tw:w-full",
-									max: R(ws),
-									min: R(Cs),
-									step: R(Ts),
+									max: R(Ts),
+									min: R(ws),
+									step: R(Es),
 									type: "range"
-								}, null, 8, xl), [[
+								}, null, 8, wl), [[
 									_o,
 									R(n).configuration.individualTokenScale,
 									void 0,
 									{ number: !0 }
-								]]), J("output", Sl, A(a.value) + "% ", 1)]),
+								]]), J("output", Tl, A(a.value) + "% ", 1)]),
 								s[22] ||= J("p", { class: "tw:dui-label" }, " 100% matches the source token’s recorded grid scale. Increase it for larger, overlapping individuals; decrease it for a clearer formation. ", -1)
 							])
 						]),
@@ -4197,12 +4204,12 @@ var Yc = cs("unit-manager", () => {
 });
 //#endregion
 //#region src/module/unit/save-configuration.ts
-async function Tl(e, t) {
-	let n = nc(t);
+async function Ol(e, t) {
+	let n = ic(t);
 	if (n.length > 0) throw Error(n.join(" "));
-	let r = zs(e);
+	let r = Vs(e);
 	if (!r) throw Error(`${e.name} does not have a Unit trait.`);
-	let i = Ls(r), a = Q(e);
+	let i = zs(r), a = Q(e);
 	if (!i || !a) throw Error(`${e.name} has not initialized its Unit source values.`);
 	let o = {
 		schemaVersion: 1,
@@ -4216,21 +4223,21 @@ async function Tl(e, t) {
 			tokenImage: i.source.tokenImage,
 			wounds: t.sourceWounds
 		}
-	}, s = t.sourceWounds * t.startingIndividuals, c = rc(a.maximumWounds, e.system.status.wounds.value, s);
+	}, s = t.sourceWounds * t.startingIndividuals, c = ac(a.maximumWounds, e.system.status.wounds.value, s);
 	await r.update({
-		[Is]: o,
+		[Ls]: o,
 		"system.specification.value": String(t.startingIndividuals)
-	}, { [gc]: !0 }), await e.update({
+	}, { [vc]: !0 }), await e.update({
 		"system.status.wounds.max": s,
 		"system.status.wounds.value": c
 	});
 	let l = Q(e);
 	if (!l) throw Error(`Could not prepare ${e.name}'s updated Unit state.`);
-	return await Ic(e), l;
+	return await Rc(e), l;
 }
 //#endregion
 //#region src/module/apps/unit-manager/UnitManagementApplication.ts
-var El = class extends xs {
+var kl = class extends xs {
 	static DEFAULT_OPTIONS = {
 		id: "fvtt-wfrp-drowsy-content-unit-manager",
 		position: {
@@ -4247,7 +4254,7 @@ var El = class extends xs {
 		super({ id: `fvtt-wfrp-drowsy-content-unit-manager-${e.id}` }), this.#e = e;
 	}
 	getVueComponent() {
-		return wl;
+		return Dl;
 	}
 	getVueProps() {
 		let e = Q(this.#e);
@@ -4255,16 +4262,20 @@ var El = class extends xs {
 		return {
 			actorName: this.#e.name,
 			initialState: e,
-			save: (e) => Tl(this.#e, e)
+			save: (e) => Ol(this.#e, e)
 		};
 	}
 };
 //#endregion
 //#region src/module/unit/actor-sheet.ts
-function Dl(e, t) {
+function Al(e, t) {
 	let n = class extends e {
 		static DEFAULT_OPTIONS = {
-			actions: { manageUnit: this.manageUnit },
+			actions: {
+				killIndividual: this.killIndividual,
+				manageUnit: this.manageUnit,
+				reviveIndividual: this.reviveIndividual
+			},
 			classes: ["fvtt-wfrp-drowsy-content-unit-sheet"]
 		};
 		static PARTS = {
@@ -4284,10 +4295,16 @@ function Dl(e, t) {
 		};
 		async _prepareContext(e) {
 			let t = await super._prepareContext(e);
-			return t.unit = Jc(Q(this.actor)), t;
+			return t.unit = Zc(Q(this.actor)), t;
 		}
 		static async manageUnit() {
-			await new El(this.actor).render(!0);
+			await new kl(this.actor).render(!0);
+		}
+		static async killIndividual() {
+			await jl(this.actor, -1);
+		}
+		static async reviveIndividual() {
+			await jl(this.actor, 1);
 		}
 	};
 	return Object.defineProperty(n, "name", {
@@ -4295,16 +4312,22 @@ function Dl(e, t) {
 		value: t
 	}), n;
 }
+async function jl(e, t) {
+	let n = Q(e);
+	if (!n) return;
+	let r = Xc(n.currentWounds, n.source.wounds, n.maximumWounds, t);
+	r !== n.currentWounds && (await e.update({ "system.status.wounds.value": r }), await Rc(e));
+}
 //#endregion
 //#region src/module/unit/register-sheets.ts
-function Ol() {
+function Ml() {
 	if (!game) throw Error("Cannot register Unit sheets before the game runtime is available.");
 	let e = game, t = foundry.applications.apps.DocumentSheetConfig, n = CONFIG.Actor.documentClass;
-	t.registerSheet(n, Z, Dl(e.wfrp4e.apps.ActorSheetWFRP4eCreature, "DrowsyUnitCreatureSheet"), {
+	t.registerSheet(n, Z, Al(e.wfrp4e.apps.ActorSheetWFRP4eCreature, "DrowsyUnitCreatureSheet"), {
 		label: "Unit Creature Sheet",
 		makeDefault: !1,
 		types: ["creature"]
-	}), t.registerSheet(n, Z, Dl(e.wfrp4e.apps.ActorSheetWFRP4eNPC, "DrowsyUnitNpcSheet"), {
+	}), t.registerSheet(n, Z, Al(e.wfrp4e.apps.ActorSheetWFRP4eNPC, "DrowsyUnitNpcSheet"), {
 		label: "Unit NPC Sheet",
 		makeDefault: !1,
 		types: ["npc"]
@@ -4312,14 +4335,14 @@ function Ol() {
 }
 //#endregion
 //#region src/module/hooks/register-module-hooks.ts
-function kl() {
-	qc(), Hooks.once("init", () => {
-		tc(), Ol();
+function Nl() {
+	Yc(), Hooks.once("init", () => {
+		rc(), Ml();
 	});
 }
 //#endregion
 //#region src/main.ts
-kl();
+Nl();
 //#endregion
 
 //# sourceMappingURL=fvtt-wfrp-drowsy-content.mjs.map

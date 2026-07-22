@@ -13,7 +13,29 @@
       <div class="tw:dui-stats tw:dui-stats-horizontal tw:w-full">
         <div class="tw:dui-stat">
           <div class="tw:dui-stat-title">Individuals</div>
-          <div class="tw:dui-stat-value">{{unit.currentIndividuals}}</div>
+          <div class="tw:flex tw:items-center tw:gap-2">
+            <button
+              aria-label="Kill one individual"
+              class="tw:dui-btn tw:dui-btn-square tw:dui-btn-xs"
+              data-action="killIndividual"
+              title="Kill one individual"
+              type="button"
+              {{disabled (not unit.canKillIndividual)}}
+            >
+              <span aria-hidden="true">−</span>
+            </button>
+            <div class="tw:dui-stat-value">{{unit.currentIndividuals}}</div>
+            <button
+              aria-label="Revive one individual"
+              class="tw:dui-btn tw:dui-btn-square tw:dui-btn-xs"
+              data-action="reviveIndividual"
+              title="Revive one individual"
+              type="button"
+              {{disabled (not unit.canReviveIndividual)}}
+            >
+              <span aria-hidden="true">+</span>
+            </button>
+          </div>
           <div class="tw:dui-stat-desc">of {{unit.startingIndividuals}}</div>
         </div>
         <div class="tw:dui-stat">
