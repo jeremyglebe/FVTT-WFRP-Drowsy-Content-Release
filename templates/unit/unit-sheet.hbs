@@ -1,0 +1,80 @@
+<section class="tab {{tab.cssClass}}" data-group="primary" data-tab="{{tab.id}}">
+  <div
+    class="fvtt-wfrp-drowsy-content-root tw:flex tw:flex-col tw:gap-4 tw:p-4 tw:text-base-content"
+    data-theme="fvtt-wfrp-drowsy-content"
+  >
+    {{#if unit.active}}
+      {{#if unit.destroyed}}
+        <div class="tw:dui-alert tw:dui-alert-error" role="alert">
+          <span>This Unit has no remaining individuals and is destroyed.</span>
+        </div>
+      {{/if}}
+
+      <div class="tw:dui-stats tw:dui-stats-horizontal tw:w-full">
+        <div class="tw:dui-stat">
+          <div class="tw:dui-stat-title">Individuals</div>
+          <div class="tw:dui-stat-value">{{unit.currentIndividuals}}</div>
+          <div class="tw:dui-stat-desc">of {{unit.startingIndividuals}}</div>
+        </div>
+        <div class="tw:dui-stat">
+          <div class="tw:dui-stat-title">Ranks</div>
+          <div class="tw:dui-stat-value">{{unit.ranks}}</div>
+        </div>
+        <div class="tw:dui-stat">
+          <div class="tw:dui-stat-title">Attacks</div>
+          <div class="tw:dui-stat-value">{{unit.attacks}}</div>
+          <div class="tw:dui-stat-desc">
+            +{{unit.rankBonusSL}}
+            SL after successful eligible Tests
+          </div>
+        </div>
+      </div>
+
+      <div class="tw:grid tw:grid-cols-1 tw:gap-4 tw:md:grid-cols-2">
+        <article class="tw:dui-card tw:dui-card-border tw:dui-card-sm">
+          <div class="tw:dui-card-body">
+            <h2 class="tw:dui-card-title">Current formation</h2>
+            <dl class="tw:grid tw:grid-cols-2 tw:gap-2">
+              <dt>Wounds</dt><dd>{{unit.currentWounds}} / {{unit.maximumWounds}}</dd>
+              <dt>Unit Size</dt><dd>{{unit.size}}</dd>
+              <dt>Turning Cost</dt><dd>{{unit.turningCost}} Movement</dd>
+            </dl>
+          </div>
+        </article>
+
+        <article class="tw:dui-card tw:dui-card-border tw:dui-card-sm">
+          <div class="tw:dui-card-body">
+            <h2 class="tw:dui-card-title">Recorded source</h2>
+            <dl class="tw:grid tw:grid-cols-2 tw:gap-2">
+              <dt>Size</dt><dd>{{unit.sourceSize}}</dd>
+              <dt>Wounds</dt><dd>{{unit.sourceWounds}}</dd>
+              <dt>Attacks</dt><dd>{{unit.sourceAttacks}}</dd>
+              <dt>Movement</dt><dd>{{unit.sourceMovement}}</dd>
+            </dl>
+          </div>
+        </article>
+      </div>
+
+      <div class="tw:dui-alert tw:dui-alert-info" role="note">
+        <span>
+          Foundry updates casualties, Ranks, Attacks, Rank Bonus SL, Size, footprint, and formation
+          art. The Rank Bonus is active by default for attacks and Leadership, optional on other
+          Fellowship Tests, and never applies to defense. Spend Movement for turns, resolve Directed
+          Manoeuvre, track Attacks used, and apply flank (+20) or rear (+40) bonuses manually.
+        </span>
+      </div>
+
+      <button
+        class="tw:dui-btn tw:dui-btn-primary tw:dui-btn-sm"
+        data-action="manageUnit"
+        type="button"
+      >
+        Manage Unit
+      </button>
+    {{else}}
+      <div class="tw:dui-alert tw:dui-alert-warning" role="alert">
+        <span>Drag the Unit trait onto this actor to initialize its formation.</span>
+      </div>
+    {{/if}}
+  </div>
+</section>
