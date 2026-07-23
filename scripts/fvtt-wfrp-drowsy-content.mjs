@@ -3949,7 +3949,7 @@ function qc(e, t) {
 function Jc(e) {
 	return new Promise((t, n) => {
 		let r = new Image();
-		r.addEventListener("load", () => t(r), { once: !0 }), r.addEventListener("error", () => n(/* @__PURE__ */ Error(`Unable to load ${e}.`)), { once: !0 }), r.src = e;
+		r.crossOrigin = "anonymous", r.addEventListener("load", () => t(r), { once: !0 }), r.addEventListener("error", () => n(/* @__PURE__ */ Error(`Unable to load ${e}.`)), { once: !0 }), r.src = e;
 	});
 }
 //#endregion
