@@ -1,5 +1,5 @@
-2026/07/23-01:01:21.138 9a78 Delete type=3 #1
-2026/07/23-01:01:21.161 15ba4 Level-0 table #5: started
-2026/07/23-01:01:21.188 15ba4 Level-0 table #5: 8954 bytes OK
-2026/07/23-01:01:21.225 15ba4 Delete type=0 #3
-2026/07/23-01:01:21.225 15ba4 Manual compaction at level-0 from '!folders!DrowsyTraitsFld1' @ 72057594037927935 : 1 .. '!items.effects!DrowsyUnitTrait1.UnitRulesEffect1' @ 0 : 0; will stop at (end)
+2026/07/23-13:34:10.977 17294 Delete type=3 #1
+2026/07/23-13:34:11.001 159d8 Level-0 table #5: started
+2026/07/23-13:34:11.061 159d8 Level-0 table #5: 12442 bytes OK
+2026/07/23-13:34:11.119 159d8 Delete type=0 #3
+2026/07/23-13:34:11.119 159d8 Manual compaction at level-0 from '!folders!DrowsyTraitsFld1' @ 72057594037927935 : 1 .. '!items.effects!yemDa1zhc4OPBvmZ.Ke7hTRo1y7f0c0lC' @ 0 : 0; will stop at (end)
