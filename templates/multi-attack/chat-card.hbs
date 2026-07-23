@@ -1,0 +1,88 @@
+<div class="wfrp4e">
+  <div class="opposed-card">
+    <h3>{{attackerName}} → {{defenderName}}</h3>
+    <p>
+      <strong>{{attackWins}}</strong>
+      hits,
+      <strong>{{defenseWins}}</strong>
+      defended,
+      <strong>{{totalDamage}}</strong>
+      potential damage
+    </p>
+    {{#if attackCriticals}}
+      <p><strong>{{attackCriticals}}</strong> attacker critical roll(s) available below.</p>
+    {{/if}}
+    {{#if defenseCriticals}}
+      <p><strong>{{defenseCriticals}}</strong> defender critical roll(s) available below.</p>
+    {{/if}}
+    <p>{{attackOptionLabel}} vs. {{defenseOptionLabel}}</p>
+
+    {{#each results}}
+      <details>
+        <summary>
+          <strong>#{{index}}</strong>
+          —
+          {{#if (eq winner "attacker")}}
+            Hit by
+            {{netSL}}
+            SL
+            {{#if damage}}for {{damage}} Damage{{/if}}
+            {{#if hitLocation}}to {{hitLocation}}{{/if}}
+          {{else}}
+            Defended by
+            {{defense.sl}}
+            vs.
+            {{attack.sl}}
+            SL
+          {{/if}}
+        </summary>
+        <div>
+          <p>
+            <strong>Attack:</strong>
+            {{attack.roll}}
+            vs.
+            {{attack.target}}
+            ({{attack.sl}}
+            SL,
+            {{attack.description}})
+          </p>
+          {{#each attack.tables}}
+            <a
+              class="action-link"
+              data-action="clickTable"
+              data-modifier="{{modifier}}"
+              data-table="{{key}}"
+            >
+              <i class="fas fa-list"></i>
+              Attacker
+              {{label}}
+              {{#if modifier}}({{numberFormat modifier sign=true}}){{/if}}
+            </a>
+          {{/each}}
+          <p>
+            <strong>Defense:</strong>
+            {{defense.roll}}
+            vs.
+            {{defense.target}}
+            ({{defense.sl}}
+            SL,
+            {{defense.description}})
+          </p>
+          {{#each defense.tables}}
+            <a
+              class="action-link"
+              data-action="clickTable"
+              data-modifier="{{modifier}}"
+              data-table="{{key}}"
+            >
+              <i class="fas fa-list"></i>
+              Defender
+              {{label}}
+              {{#if modifier}}({{numberFormat modifier sign=true}}){{/if}}
+            </a>
+          {{/each}}
+        </div>
+      </details>
+    {{/each}}
+  </div>
+</div>

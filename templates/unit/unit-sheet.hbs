@@ -86,13 +86,18 @@
         </span>
       </div>
 
-      <button
-        class="tw:dui-btn tw:dui-btn-primary tw:dui-btn-sm"
-        data-action="manageUnit"
-        type="button"
-      >
-        Manage Unit
-      </button>
+      <div class="tw:flex tw:flex-wrap tw:gap-2">
+        <button
+          class="tw:dui-btn tw:dui-btn-primary tw:dui-btn-sm"
+          data-action="multiAttack"
+          type="button"
+        >
+          Resolve Multiple Attacks
+        </button>
+        <button class="tw:dui-btn tw:dui-btn-sm" data-action="manageUnit" type="button">
+          Manage Unit
+        </button>
+      </div>
     {{else}}
       <div class="tw:dui-alert tw:dui-alert-warning" role="alert">
         <span>Drag the Unit trait onto this actor to initialize its formation.</span>
