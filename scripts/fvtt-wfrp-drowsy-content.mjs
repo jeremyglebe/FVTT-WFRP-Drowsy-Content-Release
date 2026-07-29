@@ -4121,20 +4121,38 @@ function Jc() {
 	e.api = qc();
 }
 //#endregion
+//#region src/module/song-magic/register-lore-of-song.ts
+var Yc = "song", Xc = "Song", Zc = [
+	"<p>Practitioners of the Lore of Song may use <strong>Entertain (Singing)</strong>, <strong>Perform (Dancing)</strong>, or <strong>Play (Instrument)</strong> in place of <strong>Channelling</strong> when channelling Lore of Song spells. This only applies to Channelling Tests, not Casting Tests. If a Career would grant <strong>Channelling (Any)</strong>, a character with the <strong>Arcane Magic (Song)</strong> Talent may instead select one of these Skills.</p>",
+	"<p>Lore of Song spells may be cast with either <strong>Language (Magick)</strong> or <strong>Entertain (Singing)</strong>. When casting with <strong>Entertain (Singing)</strong>, the spell cannot score more SL than the caster's <strong>Language (Magick)</strong> Bonus, before any bonus SL are applied.</p>",
+	"<p>When you successfully cast a Lore of Song spell using <strong>Entertain (Singing)</strong>, <em>your Song may inspire those around you</em>: you may grant 1 Advantage each to a number of targets up to your Fellowship Bonus.</p>",
+	"<p>When you successfully cast a Lore of Song spell using <strong>Language (Magick)</strong>, <em>you find inspiration in your muse</em>: you regain 1 Resolve, up to your maximum.</p>"
+].join("");
+function Qc() {
+	let e = game?.wfrp4e?.config;
+	e && (e.magicLores = {
+		...e.magicLores ?? {},
+		[Yc]: Xc
+	}, e.loreEffectDescriptions = {
+		...e.loreEffectDescriptions ?? {},
+		[Yc]: Zc
+	});
+}
+//#endregion
 //#region src/functions/unit/validate-unit-configuration.ts
-function Yc(e) {
+function $c(e) {
 	let t = [];
 	return (!Number.isInteger(e.startingIndividuals) || e.startingIndividuals < 1) && t.push("Starting individuals must be a positive whole number."), (!Number.isFinite(e.sourceWounds) || e.sourceWounds <= 0) && t.push("Source Wounds must be greater than zero."), (!Number.isInteger(e.sourceAttacks) || e.sourceAttacks < 1) && t.push("Source Attacks must be a positive whole number."), (!Number.isFinite(e.sourceMovement) || e.sourceMovement < 0) && t.push("Source Movement cannot be negative."), Qs(e.sourceSize) || t.push("Source Size is invalid."), (!Number.isFinite(e.individualTokenScale) || e.individualTokenScale < .25 || e.individualTokenScale > 2.5) && t.push("Individual token scale must be between 25% and 250%."), t;
 }
 //#endregion
 //#region src/functions/unit/derive/wounds-after-reconfiguration.ts
-function Xc(e, t, n) {
+function el(e, t, n) {
 	let r = Math.max(e - t, 0);
 	return Math.max(n - r, 0);
 }
 //#endregion
 //#region src/functions/unit/derive/token-geometry.ts
-function Zc(e) {
+function tl(e) {
 	let t = Ks[e];
 	return t < 1 ? {
 		height: 1,
@@ -4148,8 +4166,8 @@ function Zc(e) {
 }
 //#endregion
 //#region src/functions/unit/derive/source-token-geometry.ts
-function Qc(e) {
-	let t = e.source.tokenGeometry, n = Zc(e.source.size);
+function nl(e) {
+	let t = e.source.tokenGeometry, n = tl(e.source.size);
 	return {
 		height: t?.height ?? n.height,
 		lockRotation: e.source.lockRotation,
@@ -4160,12 +4178,12 @@ function Qc(e) {
 }
 //#endregion
 //#region src/module/unit/token-geometry.ts
-var $c = "fvtt-wfrp-drowsy-content.unitTokenSync";
-async function el(e) {
+var rl = "fvtt-wfrp-drowsy-content.unitTokenSync";
+async function il(e) {
 	let t = Q(e);
 	if (!t) return;
-	let n = Zc(t.size);
-	await nl(e, {
+	let n = tl(t.size);
+	await ol(e, {
 		height: n.height,
 		lockRotation: !1,
 		"texture.scaleX": n.scale,
@@ -4173,9 +4191,9 @@ async function el(e) {
 		width: n.width
 	});
 }
-async function tl(e, t) {
-	let n = Qc(t);
-	await nl(e, {
+async function al(e, t) {
+	let n = nl(t);
+	await ol(e, {
 		height: n.height,
 		lockRotation: n.lockRotation,
 		"texture.scaleX": n.scaleX,
@@ -4183,24 +4201,24 @@ async function tl(e, t) {
 		width: n.width
 	});
 }
-async function nl(e, t) {
+async function ol(e, t) {
 	if (e.isToken && e.token) {
-		await al(e.token, t);
+		await ll(e.token, t);
 		return;
 	}
-	await Promise.all(e.getActiveTokens().map((e) => al(e.document, t))), await e.update(Object.fromEntries(Object.entries(t).map(([e, t]) => [`prototypeToken.${e}`, t])), { [$c]: !0 });
+	await Promise.all(e.getActiveTokens().map((e) => ll(e.document, t))), await e.update(Object.fromEntries(Object.entries(t).map(([e, t]) => [`prototypeToken.${e}`, t])), { [rl]: !0 });
 }
-function rl(e) {
-	return !!e[$c];
+function sl(e) {
+	return !!e[rl];
 }
-async function il(e, t, n, r) {
-	game?.user?.id !== r || rl(n) || !ol(t) || await el(e);
+async function cl(e, t, n, r) {
+	game?.user?.id !== r || sl(n) || !ul(t) || await il(e);
 }
-async function al(e, t) {
+async function ll(e, t) {
 	let n = t["texture.scaleX"];
 	e.width === t.width && e.height === t.height && e.lockRotation === t.lockRotation && e.texture.scaleX === n && e.texture.scaleY === t["texture.scaleY"] || await e.update(t);
 }
-function ol(e) {
+function ul(e) {
 	if ("system.status.wounds.value" in e) return !0;
 	let t = e.system;
 	if (typeof t != "object" || !t) return !1;
@@ -4211,17 +4229,17 @@ function ol(e) {
 }
 //#endregion
 //#region src/module/unit/lifecycle.ts
-var sl = `${Z}.unitUpdate`, cl = `${Z}.previousUnitConfiguration`, ll = `${Z}.managedUnitUpdate`;
-function ul(e) {
+var dl = `${Z}.unitUpdate`, fl = `${Z}.previousUnitConfiguration`, pl = `${Z}.managedUnitUpdate`;
+function ml(e) {
 	if (!rc(e) || !e.parent) return;
 	let t = e.parent;
-	if (t.type !== "creature" && t.type !== "npc") return bl("The Unit trait can only be added to Creature and NPC actors."), !1;
-	if (ic(t)) return bl(`${t.name} already has a Unit trait.`), !1;
+	if (t.type !== "creature" && t.type !== "npc") return wl("The Unit trait can only be added to Creature and NPC actors."), !1;
+	if (ic(t)) return wl(`${t.name} already has a Unit trait.`), !1;
 	let n = $s(e.system.specification.value);
-	if (!n) return bl("A Unit must begin with a positive whole number of individuals."), !1;
+	if (!n) return wl("A Unit must begin with a positive whole number of individuals."), !1;
 	let r = t.system.details.size.value;
-	if (!Qs(r)) return bl(`Cannot create a Unit from unsupported source Size “${r}”.`), !1;
-	let i = t.isToken && t.token ? t.token : t.prototypeToken, a = Number(t.system.details.move.value), o = Number(t.system.status.wounds.max), s = Yc({
+	if (!Qs(r)) return wl(`Cannot create a Unit from unsupported source Size “${r}”.`), !1;
+	let i = t.isToken && t.token ? t.token : t.prototypeToken, a = Number(t.system.details.move.value), o = Number(t.system.status.wounds.max), s = $c({
 		individualTokenScale: Bs,
 		sourceAttacks: 1,
 		sourceMovement: a,
@@ -4229,7 +4247,7 @@ function ul(e) {
 		sourceWounds: o,
 		startingIndividuals: n
 	});
-	if (s.length > 0) return bl(`Cannot form this Unit. ${s.join(" ")}`), !1;
+	if (s.length > 0) return wl(`Cannot form this Unit. ${s.join(" ")}`), !1;
 	let c = {
 		schemaVersion: 1,
 		source: {
@@ -4250,8 +4268,8 @@ function ul(e) {
 	};
 	e.updateSource({ [ec]: c });
 }
-async function dl(e, t) {
-	if (!rc(e) || !e.parent || !yl(t)) return;
+async function hl(e, t) {
+	if (!rc(e) || !e.parent || !Cl(t)) return;
 	let n = nc(e), r = $s(e.system.specification.value);
 	if (!n || !r) return;
 	let i = n.source.wounds * r;
@@ -4259,78 +4277,78 @@ async function dl(e, t) {
 		"system.status.wounds.max": i,
 		"system.status.wounds.value": i,
 		"prototypeToken.lockRotation": !1
-	}, { [sl]: !0 }), await el(e.parent), xl(`${e.parent.name} formed a Unit of ${r} individuals.`);
+	}, { [dl]: !0 }), await il(e.parent), Tl(`${e.parent.name} formed a Unit of ${r} individuals.`);
 }
-function fl(e, t, n) {
+function gl(e, t, n) {
 	if (!rc(e)) return;
-	if (vl(t)) return bl("A Unit cannot be disabled. Delete the trait to restore its source creature."), !1;
-	let r = _l(t);
-	if (!(r === void 0 && !ml(t))) {
-		if (r !== void 0 && !$s(r)) return bl("A Unit must contain a positive whole number of starting individuals."), !1;
-		n[cl] = {
+	if (Sl(t)) return wl("A Unit cannot be disabled. Delete the trait to restore its source creature."), !1;
+	let r = xl(t);
+	if (!(r === void 0 && !vl(t))) {
+		if (r !== void 0 && !$s(r)) return wl("A Unit must contain a positive whole number of starting individuals."), !1;
+		n[fl] = {
 			count: $s(e.system.specification.value),
 			stored: nc(e)
 		};
 	}
 }
-async function pl(e, t, n, r) {
-	if (!rc(e) || !e.parent || !yl(r) || n[ll] || _l(t) === void 0 && !ml(t)) return;
-	let i = n[cl];
-	if (!hl(i)) return;
+async function _l(e, t, n, r) {
+	if (!rc(e) || !e.parent || !Cl(r) || n[pl] || xl(t) === void 0 && !vl(t)) return;
+	let i = n[fl];
+	if (!yl(i)) return;
 	let a = i.count, o = $s(e.system.specification.value), s = nc(e);
 	if (!o || !s) return;
 	let c = i.stored.source.wounds * a, l = s.source.wounds * o;
 	await e.parent.update({
 		"system.status.wounds.max": l,
-		"system.status.wounds.value": Xc(c, e.parent.system.status.wounds.value, l)
-	}, { [sl]: !0 }), await el(e.parent);
+		"system.status.wounds.value": el(c, e.parent.system.status.wounds.value, l)
+	}, { [dl]: !0 }), await il(e.parent);
 }
-function ml(e) {
+function vl(e) {
 	if (ec in e) return !0;
 	let t = e.flags;
 	if (typeof t != "object" || !t) return !1;
 	let n = t[Z];
 	return typeof n == "object" && !!n && "unit" in n;
 }
-function hl(e) {
+function yl(e) {
 	if (typeof e != "object" || !e) return !1;
 	let t = e;
 	return !!(t.count && t.stored);
 }
-async function gl(e, t) {
-	if (!rc(e) || !e.parent || !yl(t)) return;
+async function bl(e, t) {
+	if (!rc(e) || !e.parent || !Cl(t)) return;
 	let n = nc(e);
 	n && (await e.parent.update({
 		"system.status.wounds.max": n.source.wounds,
 		"system.status.wounds.value": Math.min(e.parent.system.status.wounds.value, n.source.wounds)
-	}, { [sl]: !0 }), await tl(e.parent, n));
+	}, { [dl]: !0 }), await al(e.parent, n));
 }
-function _l(e) {
+function xl(e) {
 	if ("system.specification.value" in e) return e["system.specification.value"];
 	let t = e.system;
 	if (typeof t != "object" || !t) return;
 	let n = t.specification;
 	if (!(typeof n != "object" || !n)) return n.value;
 }
-function vl(e) {
+function Sl(e) {
 	if (e["system.disabled"] === !0 || e["system.enabled"] === !1) return !0;
 	let t = e.system;
 	if (typeof t != "object" || !t) return !1;
 	let n = t;
 	return n.disabled === !0 || n.enabled === !1;
 }
-function yl(e) {
+function Cl(e) {
 	return game?.user?.id === e;
 }
-function bl(e) {
+function wl(e) {
 	ui.notifications.error(e);
 }
-function xl(e) {
+function Tl(e) {
 	ui.notifications.info(e);
 }
 //#endregion
 //#region src/functions/unit/derive/formation-layout.ts
-function Sl({ height: e, individuals: t, startX: n, startY: r, width: i }) {
+function El({ height: e, individuals: t, startX: n, startY: r, width: i }) {
 	if (t < 1) return [];
 	let a = Math.ceil(Math.sqrt(t)), o = Math.ceil(t / a), s = i / a, c = e / o;
 	return Array.from({ length: t }, (e, t) => {
@@ -4345,8 +4363,8 @@ function Sl({ height: e, individuals: t, startX: n, startY: r, width: i }) {
 }
 //#endregion
 //#region src/functions/unit/derive/individual-token-size.ts
-function Cl({ availableHeight: e, availableWidth: t, currentSize: n, imageHeight: r, imageWidth: i, source: a }) {
-	let o = Zc(a.size), s = (a.tokenGeometry?.width ?? o.width) * Math.abs(a.tokenGeometry?.scaleX ?? o.scale), c = (a.tokenGeometry?.height ?? o.height) * Math.abs(a.tokenGeometry?.scaleY ?? o.scale), l = Zc(n), u = l.width * l.scale, d = l.height * l.scale, f = s / u * t * a.individualTokenScale, p = c / d * e * a.individualTokenScale, m = i / r;
+function Dl({ availableHeight: e, availableWidth: t, currentSize: n, imageHeight: r, imageWidth: i, source: a }) {
+	let o = tl(a.size), s = (a.tokenGeometry?.width ?? o.width) * Math.abs(a.tokenGeometry?.scaleX ?? o.scale), c = (a.tokenGeometry?.height ?? o.height) * Math.abs(a.tokenGeometry?.scaleY ?? o.scale), l = tl(n), u = l.width * l.scale, d = l.height * l.scale, f = s / u * t * a.individualTokenScale, p = c / d * e * a.individualTokenScale, m = i / r;
 	return m > f / p ? {
 		height: f / m,
 		width: f
@@ -4357,62 +4375,62 @@ function Cl({ availableHeight: e, availableWidth: t, currentSize: n, imageHeight
 }
 //#endregion
 //#region src/module/unit/token-mosaic.ts
-var $ = 512, wl = 26, Tl = 22, El = /* @__PURE__ */ new WeakMap(), Dl = /* @__PURE__ */ new WeakMap();
-async function Ol(e) {
+var $ = 512, Ol = 26, kl = 22, Al = /* @__PURE__ */ new WeakMap(), jl = /* @__PURE__ */ new WeakMap();
+async function Ml(e) {
 	let t = e.actor ? Q(e.actor) : void 0;
 	if (!t) {
-		Al(e);
+		Pl(e);
 		return;
 	}
-	let n = Pl(t), r = El.get(e);
+	let n = Rl(t), r = Al.get(e);
 	if (r?.key === n) {
 		e.mesh.texture = r.texture;
 		return;
 	}
-	let i = (Dl.get(e) ?? 0) + 1;
-	Dl.set(e, i);
+	let i = (jl.get(e) ?? 0) + 1;
+	jl.set(e, i);
 	try {
-		let a = await Ml(t);
-		if (Dl.get(e) !== i) {
+		let a = await Il(t);
+		if (jl.get(e) !== i) {
 			a.destroy(!0);
 			return;
 		}
 		let o = r?.originalMeshTexture ?? e.mesh.texture;
-		jl(e), e.mesh.texture = a, El.set(e, {
+		Fl(e), e.mesh.texture = a, Al.set(e, {
 			generation: i,
 			key: n,
 			originalMeshTexture: o,
 			texture: a
 		});
 	} catch (n) {
-		console.error(`Could not render Unit token mosaic from ${t.source.tokenImage}.`, n), Dl.get(e) === i && jl(e);
+		console.error(`Could not render Unit token mosaic from ${t.source.tokenImage}.`, n), jl.get(e) === i && Fl(e);
 	}
 }
-async function kl(e) {
-	await Promise.all(e.getActiveTokens().map(Ol));
+async function Nl(e) {
+	await Promise.all(e.getActiveTokens().map(Ml));
 }
-function Al(e) {
-	Dl.set(e, (Dl.get(e) ?? 0) + 1), jl(e);
+function Pl(e) {
+	jl.set(e, (jl.get(e) ?? 0) + 1), Fl(e);
 }
-function jl(e) {
-	let t = El.get(e);
-	t && (e.mesh.texture = t.originalMeshTexture, t.texture.destroy(!0), El.delete(e));
+function Fl(e) {
+	let t = Al.get(e);
+	t && (e.mesh.texture = t.originalMeshTexture, t.texture.destroy(!0), Al.delete(e));
 }
-async function Ml(e) {
-	let t = await zl(e.source.tokenImage), n = document.createElement("canvas");
+async function Il(e) {
+	let t = await Ul(e.source.tokenImage), n = document.createElement("canvas");
 	n.width = $, n.height = $;
 	let r = n.getContext("2d");
 	if (!r) throw Error("The browser did not provide a 2D canvas context.");
-	return Fl(r), e.currentIndividuals > 0 ? Nl(r, t, e) : Ll(r), Il(r), Rl(r, e.currentIndividuals), PIXI.Texture.from(n);
+	return zl(r), e.currentIndividuals > 0 ? Ll(r, t, e) : Vl(r), Bl(r), Hl(r, e.currentIndividuals), PIXI.Texture.from(n);
 }
-function Nl(e, t, n) {
-	let r = n.currentIndividuals, i = $ - Tl * 2, a = $ - Tl * 2 - wl, o = Sl({
+function Ll(e, t, n) {
+	let r = n.currentIndividuals, i = $ - kl * 2, a = $ - kl * 2 - Ol, o = El({
 		height: a,
 		individuals: r,
-		startX: Tl,
+		startX: kl,
 		startY: 48,
 		width: i
-	}), s = Cl({
+	}), s = Dl({
 		availableHeight: a,
 		availableWidth: i,
 		currentSize: n.size,
@@ -4422,7 +4440,7 @@ function Nl(e, t, n) {
 	});
 	for (let n of o) e.drawImage(t, n.x - s.width / 2, n.y - s.height / 2, Math.max(s.width, .5), Math.max(s.height, .5));
 }
-function Pl(e) {
+function Rl(e) {
 	let t = e.source.tokenGeometry;
 	return [
 		e.source.tokenImage,
@@ -4436,19 +4454,19 @@ function Pl(e) {
 		t?.scaleY
 	].join("|");
 }
-function Fl(e) {
+function zl(e) {
 	e.fillStyle = "rgba(33, 24, 19, 0.82)", e.fillRect(0, 0, $, $), e.strokeStyle = "rgba(217, 164, 79, 0.9)", e.lineWidth = 8, e.strokeRect(8, 8, $ - 16, $ - 16);
 }
-function Il(e) {
+function Bl(e) {
 	e.fillStyle = "#d9a44f", e.beginPath(), e.moveTo($ / 2, 8), e.lineTo($ / 2 - 24, 38), e.lineTo(280, 38), e.closePath(), e.fill();
 }
-function Ll(e) {
+function Vl(e) {
 	e.strokeStyle = "#782e22", e.lineCap = "round", e.lineWidth = 38, e.beginPath(), e.moveTo(130, 130), e.lineTo(382, 382), e.moveTo(382, 130), e.lineTo(130, 382), e.stroke();
 }
-function Rl(e, t) {
+function Hl(e, t) {
 	e.fillStyle = "rgba(33, 24, 19, 0.9)", e.fillRect($ - 114, $ - 60, 94, 40), e.fillStyle = "#f1e1ce", e.font = "bold 28px sans-serif", e.textAlign = "right", e.textBaseline = "middle", e.fillText(String(t), $ - 30, $ - 40);
 }
-function zl(e) {
+function Ul(e) {
 	return new Promise((t, n) => {
 		let r = new Image();
 		r.crossOrigin = "anonymous", r.addEventListener("load", () => t(r), { once: !0 }), r.addEventListener("error", () => n(/* @__PURE__ */ Error(`Unable to load ${e}.`)), { once: !0 }), r.src = e;
@@ -4456,17 +4474,17 @@ function zl(e) {
 }
 //#endregion
 //#region src/module/unit/register-hooks.ts
-function Bl() {
-	Hooks.on("preCreateItem", (...e) => ul(e[0])), Hooks.on("createItem", (...e) => dl(e[0], e[3])), Hooks.on("preUpdateItem", (...e) => fl(e[0], e[1], e[2])), Hooks.on("updateItem", (...e) => pl(e[0], e[1], e[2], e[3])), Hooks.on("deleteItem", (...e) => gl(e[0], e[2])), Hooks.on("updateActor", (...e) => il(e[0], e[1], e[2], e[3])), Hooks.on("refreshToken", (...e) => Ol(e[0])), Hooks.on("destroyToken", (...e) => Al(e[0]));
+function Wl() {
+	Hooks.on("preCreateItem", (...e) => ml(e[0])), Hooks.on("createItem", (...e) => hl(e[0], e[3])), Hooks.on("preUpdateItem", (...e) => gl(e[0], e[1], e[2])), Hooks.on("updateItem", (...e) => _l(e[0], e[1], e[2], e[3])), Hooks.on("deleteItem", (...e) => bl(e[0], e[2])), Hooks.on("updateActor", (...e) => cl(e[0], e[1], e[2], e[3])), Hooks.on("refreshToken", (...e) => Ml(e[0])), Hooks.on("destroyToken", (...e) => Pl(e[0]));
 }
 //#endregion
 //#region src/functions/unit/derive/individual-adjustment.ts
-function Vl(e, t, n, r) {
+function Gl(e, t, n, r) {
 	return Math.min(Math.max(e + t * r, 0), n);
 }
 //#endregion
 //#region src/functions/unit/map-unit-sheet-context.ts
-function Hl(e) {
+function Kl(e) {
 	return e ? {
 		active: !0,
 		attacks: e.attacks,
@@ -4489,7 +4507,7 @@ function Hl(e) {
 }
 //#endregion
 //#region src/state/apps/unit-manager/unit-manager-store.ts
-var Ul = cs("unit-manager", () => {
+var ql = cs("unit-manager", () => {
 	let e = /* @__PURE__ */ Kt(), t = /* @__PURE__ */ Kt(""), n = /* @__PURE__ */ Kt(!1), r = /* @__PURE__ */ It({
 		individualTokenScale: Bs,
 		sourceAttacks: 1,
@@ -4513,19 +4531,19 @@ var Ul = cs("unit-manager", () => {
 		unit: e,
 		woundPercentage: i
 	};
-}), Wl = { class: "tw:text-2xl tw:font-semibold" }, Gl = {
+}), Jl = { class: "tw:text-2xl tw:font-semibold" }, Yl = {
 	key: 0,
 	class: "tw:dui-alert tw:dui-alert-error",
 	role: "alert"
-}, Kl = {
+}, Xl = {
 	key: 1,
 	class: "tw:dui-alert tw:dui-alert-error",
 	role: "alert"
-}, ql = { class: "tw:dui-stats tw:dui-stats-horizontal tw:w-full" }, Jl = { class: "tw:dui-stat" }, Yl = { class: "tw:dui-stat-value" }, Xl = { class: "tw:dui-stat-desc" }, Zl = { class: "tw:dui-stat" }, Ql = { class: "tw:dui-stat-value" }, $l = { class: "tw:dui-stat-desc" }, eu = { class: "tw:dui-stat" }, tu = { class: "tw:dui-stat-value" }, nu = { class: "tw:dui-stat-desc" }, ru = { class: "tw:text-lg tw:font-semibold" }, iu = { class: "tw:text-lg tw:font-semibold" }, au = { class: "tw:text-lg tw:font-semibold" }, ou = ["value"], su = { class: "tw:dui-fieldset" }, cu = { class: "tw:dui-fieldset" }, lu = ["value"], uu = { class: "tw:dui-fieldset" }, du = { class: "tw:dui-fieldset" }, fu = { class: "tw:dui-fieldset" }, pu = { class: "tw:dui-fieldset tw:md:col-span-2" }, mu = { class: "tw:flex tw:items-center tw:gap-3" }, hu = [
+}, Zl = { class: "tw:dui-stats tw:dui-stats-horizontal tw:w-full" }, Ql = { class: "tw:dui-stat" }, $l = { class: "tw:dui-stat-value" }, eu = { class: "tw:dui-stat-desc" }, tu = { class: "tw:dui-stat" }, nu = { class: "tw:dui-stat-value" }, ru = { class: "tw:dui-stat-desc" }, iu = { class: "tw:dui-stat" }, au = { class: "tw:dui-stat-value" }, ou = { class: "tw:dui-stat-desc" }, su = { class: "tw:text-lg tw:font-semibold" }, cu = { class: "tw:text-lg tw:font-semibold" }, lu = { class: "tw:text-lg tw:font-semibold" }, uu = ["value"], du = { class: "tw:dui-fieldset" }, fu = { class: "tw:dui-fieldset" }, pu = ["value"], mu = { class: "tw:dui-fieldset" }, hu = { class: "tw:dui-fieldset" }, gu = { class: "tw:dui-fieldset" }, _u = { class: "tw:dui-fieldset tw:md:col-span-2" }, vu = { class: "tw:flex tw:items-center tw:gap-3" }, yu = [
 	"max",
 	"min",
 	"step"
-], gu = { class: "tw:w-14 tw:text-right tw:font-semibold tw:tabular-nums" }, _u = ["disabled"], vu = /* @__PURE__ */ Wn({
+], bu = { class: "tw:w-14 tw:text-right tw:font-semibold tw:tabular-nums" }, xu = ["disabled"], Su = /* @__PURE__ */ Wn({
 	__name: "UnitManagerApp",
 	props: {
 		actorName: {},
@@ -4533,7 +4551,7 @@ var Ul = cs("unit-manager", () => {
 		save: { type: Function }
 	},
 	setup(e) {
-		let t = e, n = Ul();
+		let t = e, n = ql();
 		n.initialize(t.initialState);
 		let r = Object.entries(Gs), i = Ta(() => n.unit), a = Ta(() => Math.round(n.configuration.individualTokenScale * 100));
 		async function o() {
@@ -4553,24 +4571,24 @@ var Ul = cs("unit-manager", () => {
 			onSubmit: Co(o, ["prevent"])
 		}, {
 			default: V(() => [
-				J("header", null, [J("h1", Wl, A(e.actorName) + " Unit", 1), s[6] ||= J("p", { class: "tw:text-sm tw:opacity-75" }, " Current values respond to Wounds. Source values remain fixed until you save changes here. ", -1)]),
-				i.value.destroyed ? (K(), q("div", Gl, [...s[7] ||= [J("span", null, "This Unit has no remaining individuals and is destroyed.", -1)]])) : Qi("", !0),
-				L(n).error ? (K(), q("div", Kl, [J("span", null, A(L(n).error), 1)])) : Qi("", !0),
-				J("div", ql, [
-					J("div", Jl, [
+				J("header", null, [J("h1", Jl, A(e.actorName) + " Unit", 1), s[6] ||= J("p", { class: "tw:text-sm tw:opacity-75" }, " Current values respond to Wounds. Source values remain fixed until you save changes here. ", -1)]),
+				i.value.destroyed ? (K(), q("div", Yl, [...s[7] ||= [J("span", null, "This Unit has no remaining individuals and is destroyed.", -1)]])) : Qi("", !0),
+				L(n).error ? (K(), q("div", Xl, [J("span", null, A(L(n).error), 1)])) : Qi("", !0),
+				J("div", Zl, [
+					J("div", Ql, [
 						s[8] ||= J("div", { class: "tw:dui-stat-title" }, "Individuals", -1),
-						J("div", Yl, A(i.value.currentIndividuals), 1),
-						J("div", Xl, "of " + A(i.value.source.startingIndividuals), 1)
+						J("div", $l, A(i.value.currentIndividuals), 1),
+						J("div", eu, "of " + A(i.value.source.startingIndividuals), 1)
 					]),
-					J("div", Zl, [
+					J("div", tu, [
 						s[9] ||= J("div", { class: "tw:dui-stat-title" }, "Ranks", -1),
-						J("div", Ql, A(i.value.ranks), 1),
-						J("div", $l, A(i.value.rankIncrement) + " individuals each", 1)
+						J("div", nu, A(i.value.ranks), 1),
+						J("div", ru, A(i.value.rankIncrement) + " individuals each", 1)
 					]),
-					J("div", eu, [
+					J("div", iu, [
 						s[10] ||= J("div", { class: "tw:dui-stat-title" }, "Attacks", -1),
-						J("div", tu, A(i.value.attacks), 1),
-						J("div", nu, " +" + A(i.value.rankBonusSL) + " SL after successful eligible Tests ", 1)
+						J("div", au, A(i.value.attacks), 1),
+						J("div", ou, " +" + A(i.value.rankBonusSL) + " SL after successful eligible Tests ", 1)
 					])
 				]),
 				Y(hs, {
@@ -4584,9 +4602,9 @@ var Ul = cs("unit-manager", () => {
 							gap: "sm"
 						}, {
 							default: V(() => [
-								J("div", null, [s[11] ||= J("div", { class: "tw:text-xs tw:uppercase tw:opacity-60" }, "Wounds", -1), J("div", ru, A(i.value.currentWounds) + " / " + A(i.value.maximumWounds), 1)]),
-								J("div", null, [s[12] ||= J("div", { class: "tw:text-xs tw:uppercase tw:opacity-60" }, "Unit Size", -1), J("div", iu, A(L(Gs)[i.value.size]), 1)]),
-								J("div", null, [s[13] ||= J("div", { class: "tw:text-xs tw:uppercase tw:opacity-60" }, "Turning Cost", -1), J("div", au, A(i.value.turningCost) + " Movement", 1)])
+								J("div", null, [s[11] ||= J("div", { class: "tw:text-xs tw:uppercase tw:opacity-60" }, "Wounds", -1), J("div", su, A(i.value.currentWounds) + " / " + A(i.value.maximumWounds), 1)]),
+								J("div", null, [s[12] ||= J("div", { class: "tw:text-xs tw:uppercase tw:opacity-60" }, "Unit Size", -1), J("div", cu, A(L(Gs)[i.value.size]), 1)]),
+								J("div", null, [s[13] ||= J("div", { class: "tw:text-xs tw:uppercase tw:opacity-60" }, "Turning Cost", -1), J("div", lu, A(i.value.turningCost) + " Movement", 1)])
 							]),
 							_: 1
 						}),
@@ -4594,7 +4612,7 @@ var Ul = cs("unit-manager", () => {
 							class: "tw:dui-progress tw:w-full",
 							max: 100,
 							value: L(n).woundPercentage
-						}, null, 8, ou),
+						}, null, 8, uu),
 						s[14] ||= J("p", { class: "tw:text-xs tw:opacity-70" }, " Change current Wounds on the actor sheet. A normal 180° turn costs twice the displayed Turning Cost; Directed Manoeuvre can reduce it to one cost. Movement spending, manoeuvre Tests, Attacks used, and flank or rear bonuses remain manual. ", -1)
 					]),
 					_: 1
@@ -4607,13 +4625,13 @@ var Ul = cs("unit-manager", () => {
 					actions: V(() => [J("button", {
 						class: "tw:dui-btn tw:dui-btn-primary tw:dui-btn-sm",
 						disabled: L(n).saving
-					}, A(L(n).saving ? "Saving…" : "Save Unit"), 9, _u)]),
+					}, A(L(n).saving ? "Saving…" : "Save Unit"), 9, xu)]),
 					default: V(() => [Y(_s, {
 						columns: "two",
 						gap: "sm"
 					}, {
 						default: V(() => [
-							J("fieldset", su, [s[15] ||= J("legend", { class: "tw:dui-fieldset-legend" }, "Starting individuals", -1), kn(J("input", {
+							J("fieldset", du, [s[15] ||= J("legend", { class: "tw:dui-fieldset-legend" }, "Starting individuals", -1), kn(J("input", {
 								"onUpdate:modelValue": s[0] ||= (e) => L(n).configuration.startingIndividuals = e,
 								class: "tw:dui-input tw:dui-input-sm tw:w-full",
 								min: "1",
@@ -4626,14 +4644,14 @@ var Ul = cs("unit-manager", () => {
 								void 0,
 								{ number: !0 }
 							]])]),
-							J("fieldset", cu, [s[16] ||= J("legend", { class: "tw:dui-fieldset-legend" }, "Source Size", -1), kn(J("select", {
+							J("fieldset", fu, [s[16] ||= J("legend", { class: "tw:dui-fieldset-legend" }, "Source Size", -1), kn(J("select", {
 								"onUpdate:modelValue": s[1] ||= (e) => L(n).configuration.sourceSize = e,
 								class: "tw:dui-select tw:dui-select-sm tw:w-full"
 							}, [(K(!0), q(W, null, yr(L(r), ([e, t]) => (K(), q("option", {
 								key: e,
 								value: e
-							}, A(t), 9, lu))), 128))], 512), [[vo, L(n).configuration.sourceSize]])]),
-							J("fieldset", uu, [s[17] ||= J("legend", { class: "tw:dui-fieldset-legend" }, "Source Wounds", -1), kn(J("input", {
+							}, A(t), 9, pu))), 128))], 512), [[vo, L(n).configuration.sourceSize]])]),
+							J("fieldset", mu, [s[17] ||= J("legend", { class: "tw:dui-fieldset-legend" }, "Source Wounds", -1), kn(J("input", {
 								"onUpdate:modelValue": s[2] ||= (e) => L(n).configuration.sourceWounds = e,
 								class: "tw:dui-input tw:dui-input-sm tw:w-full",
 								min: "0.01",
@@ -4646,7 +4664,7 @@ var Ul = cs("unit-manager", () => {
 								void 0,
 								{ number: !0 }
 							]])]),
-							J("fieldset", du, [
+							J("fieldset", hu, [
 								s[18] ||= J("legend", { class: "tw:dui-fieldset-legend" }, "Source Attacks", -1),
 								kn(J("input", {
 									"onUpdate:modelValue": s[3] ||= (e) => L(n).configuration.sourceAttacks = e,
@@ -4663,7 +4681,7 @@ var Ul = cs("unit-manager", () => {
 								]]),
 								s[19] ||= J("p", { class: "tw:dui-label" }, "WFRP has no native Attacks field, so Unit records it here.", -1)
 							]),
-							J("fieldset", fu, [s[20] ||= J("legend", { class: "tw:dui-fieldset-legend" }, "Source Movement", -1), kn(J("input", {
+							J("fieldset", gu, [s[20] ||= J("legend", { class: "tw:dui-fieldset-legend" }, "Source Movement", -1), kn(J("input", {
 								"onUpdate:modelValue": s[4] ||= (e) => L(n).configuration.sourceMovement = e,
 								class: "tw:dui-input tw:dui-input-sm tw:w-full",
 								min: "0",
@@ -4676,9 +4694,9 @@ var Ul = cs("unit-manager", () => {
 								void 0,
 								{ number: !0 }
 							]])]),
-							J("fieldset", pu, [
+							J("fieldset", _u, [
 								s[21] ||= J("legend", { class: "tw:dui-fieldset-legend" }, "Individual token scale", -1),
-								J("div", mu, [kn(J("input", {
+								J("div", vu, [kn(J("input", {
 									"onUpdate:modelValue": s[5] ||= (e) => L(n).configuration.individualTokenScale = e,
 									"aria-label": "Individual token scale",
 									class: "tw:dui-range tw:w-full",
@@ -4686,12 +4704,12 @@ var Ul = cs("unit-manager", () => {
 									min: L(Vs),
 									step: L(Us),
 									type: "range"
-								}, null, 8, hu), [[
+								}, null, 8, yu), [[
 									_o,
 									L(n).configuration.individualTokenScale,
 									void 0,
 									{ number: !0 }
-								]]), J("output", gu, A(a.value) + "% ", 1)]),
+								]]), J("output", bu, A(a.value) + "% ", 1)]),
 								s[22] ||= J("p", { class: "tw:dui-label" }, " 100% matches the source token’s recorded grid scale. Increase it for larger, overlapping individuals; decrease it for a clearer formation. ", -1)
 							])
 						]),
@@ -4706,8 +4724,8 @@ var Ul = cs("unit-manager", () => {
 });
 //#endregion
 //#region src/module/unit/save-configuration.ts
-async function yu(e, t) {
-	let n = Yc(t);
+async function Cu(e, t) {
+	let n = $c(t);
 	if (n.length > 0) throw Error(n.join(" "));
 	let r = ic(e);
 	if (!r) throw Error(`${e.name} does not have a Unit trait.`);
@@ -4725,21 +4743,21 @@ async function yu(e, t) {
 			wounds: t.sourceWounds,
 			...i.source.tokenGeometry ? { tokenGeometry: i.source.tokenGeometry } : {}
 		}
-	}, s = t.sourceWounds * t.startingIndividuals, c = Xc(a.maximumWounds, e.system.status.wounds.value, s);
+	}, s = t.sourceWounds * t.startingIndividuals, c = el(a.maximumWounds, e.system.status.wounds.value, s);
 	await r.update({
 		[ec]: o,
 		"system.specification.value": String(t.startingIndividuals)
-	}, { [ll]: !0 }), await e.update({
+	}, { [pl]: !0 }), await e.update({
 		"system.status.wounds.max": s,
 		"system.status.wounds.value": c
 	});
 	let l = Q(e);
 	if (!l) throw Error(`Could not prepare ${e.name}'s updated Unit state.`);
-	return await kl(e), l;
+	return await Nl(e), l;
 }
 //#endregion
 //#region src/module/apps/unit-manager/UnitManagementApplication.ts
-var bu = class extends xs {
+var wu = class extends xs {
 	static DEFAULT_OPTIONS = {
 		id: "fvtt-wfrp-drowsy-content-unit-manager",
 		position: {
@@ -4756,7 +4774,7 @@ var bu = class extends xs {
 		super({ id: `fvtt-wfrp-drowsy-content-unit-manager-${e.id}` }), this.#e = e;
 	}
 	getVueComponent() {
-		return vu;
+		return Su;
 	}
 	getVueProps() {
 		let e = Q(this.#e);
@@ -4764,13 +4782,13 @@ var bu = class extends xs {
 		return {
 			actorName: this.#e.name,
 			initialState: e,
-			save: (e) => yu(this.#e, e)
+			save: (e) => Cu(this.#e, e)
 		};
 	}
 };
 //#endregion
 //#region src/module/unit/actor-sheet.ts
-function xu(e, t) {
+function Tu(e, t) {
 	let n = class extends e {
 		static DEFAULT_OPTIONS = {
 			actions: {
@@ -4798,10 +4816,10 @@ function xu(e, t) {
 		};
 		async _prepareContext(e) {
 			let t = await super._prepareContext(e);
-			return t.unit = Hl(Q(this.actor)), t;
+			return t.unit = Kl(Q(this.actor)), t;
 		}
 		static async manageUnit() {
-			await new bu(this.actor).render(!0);
+			await new wu(this.actor).render(!0);
 		}
 		static async multiAttack() {
 			try {
@@ -4811,10 +4829,10 @@ function xu(e, t) {
 			}
 		}
 		static async killIndividual() {
-			await Su(this.actor, -1);
+			await Eu(this.actor, -1);
 		}
 		static async reviveIndividual() {
-			await Su(this.actor, 1);
+			await Eu(this.actor, 1);
 		}
 	};
 	return Object.defineProperty(n, "name", {
@@ -4822,22 +4840,22 @@ function xu(e, t) {
 		value: t
 	}), n;
 }
-async function Su(e, t) {
+async function Eu(e, t) {
 	let n = Q(e);
 	if (!n) return;
-	let r = Vl(n.currentWounds, n.source.wounds, n.maximumWounds, t);
-	r !== n.currentWounds && (await e.update({ "system.status.wounds.value": r }), await kl(e));
+	let r = Gl(n.currentWounds, n.source.wounds, n.maximumWounds, t);
+	r !== n.currentWounds && (await e.update({ "system.status.wounds.value": r }), await Nl(e));
 }
 //#endregion
 //#region src/module/unit/register-sheets.ts
-function Cu() {
+function Du() {
 	if (!game) throw Error("Cannot register Unit sheets before the game runtime is available.");
 	let e = game, t = foundry.applications.apps.DocumentSheetConfig, n = CONFIG.Actor.documentClass;
-	t.registerSheet(n, Z, xu(e.wfrp4e.apps.ActorSheetWFRP4eCreature, "DrowsyUnitCreatureSheet"), {
+	t.registerSheet(n, Z, Tu(e.wfrp4e.apps.ActorSheetWFRP4eCreature, "DrowsyUnitCreatureSheet"), {
 		label: "Unit Creature Sheet",
 		makeDefault: !1,
 		types: ["creature"]
-	}), t.registerSheet(n, Z, xu(e.wfrp4e.apps.ActorSheetWFRP4eNPC, "DrowsyUnitNpcSheet"), {
+	}), t.registerSheet(n, Z, Tu(e.wfrp4e.apps.ActorSheetWFRP4eNPC, "DrowsyUnitNpcSheet"), {
 		label: "Unit NPC Sheet",
 		makeDefault: !1,
 		types: ["npc"]
@@ -4845,14 +4863,14 @@ function Cu() {
 }
 //#endregion
 //#region src/module/hooks/register-module-hooks.ts
-function wu() {
-	Bl(), Hooks.once("init", () => {
-		Jc(), Cu();
+function Ou() {
+	Wl(), Hooks.once("init", () => {
+		Qc(), Jc(), Du();
 	});
 }
 //#endregion
 //#region src/main.ts
-wu();
+Ou();
 //#endregion
 
 //# sourceMappingURL=fvtt-wfrp-drowsy-content.mjs.map
