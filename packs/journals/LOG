@@ -1,5 +1,5 @@
-2026/07/29-15:40:23.788329 16ef43000 Delete type=3 #1
-2026/07/29-15:40:23.791847 16f7db000 Level-0 table #5: started
-2026/07/29-15:40:23.792510 16f7db000 Level-0 table #5: 16220 bytes OK
-2026/07/29-15:40:23.792654 16f7db000 Delete type=0 #3
-2026/07/29-15:40:23.792894 16f7db000 Manual compaction at level-0 from '!journal!DrowsyLoreSong01' @ 72057594037927935 : 1 .. '!journal.pages!KIkovUaahjpCo5Ch.2LilX41HswVdM7Q3' @ 0 : 0; will stop at (end)
+2026/07/29-16:41:50.615473 16fc5b000 Delete type=3 #1
+2026/07/29-16:41:50.615983 16fce7000 Level-0 table #5: started
+2026/07/29-16:41:50.616326 16fce7000 Level-0 table #5: 16220 bytes OK
+2026/07/29-16:41:50.616404 16fce7000 Delete type=0 #3
+2026/07/29-16:41:50.616463 16fce7000 Manual compaction at level-0 from '!journal!DrowsyLoreSong01' @ 72057594037927935 : 1 .. '!journal.pages!KIkovUaahjpCo5Ch.2LilX41HswVdM7Q3' @ 0 : 0; will stop at (end)
