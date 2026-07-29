@@ -16,9 +16,14 @@
       <p><strong>{{defenseCriticals}}</strong> defender critical roll(s) available below.</p>
     {{/if}}
     <p>{{attackOptionLabel}} vs. {{defenseOptionLabel}}</p>
+    {{#if damageApplicationsAvailable}}
+      <button type="button" data-multi-attack-action="apply-all-damage">
+        Apply All Damage ({{damageApplicationsAvailable}})
+      </button>
+    {{/if}}
 
     {{#each results}}
-      <details>
+      <details data-multi-attack-result="{{index}}">
         <summary>
           <strong>#{{index}}</strong>
           —
@@ -59,28 +64,45 @@
               {{#if modifier}}({{numberFormat modifier sign=true}}){{/if}}
             </a>
           {{/each}}
-          <p>
-            <strong>Defense:</strong>
-            {{defense.roll}}
-            vs.
-            {{defense.target}}
-            ({{defense.sl}}
-            SL,
-            {{defense.description}})
-          </p>
-          {{#each defense.tables}}
-            <a
-              class="action-link"
-              data-action="clickTable"
-              data-modifier="{{modifier}}"
-              data-table="{{key}}"
-            >
-              <i class="fas fa-list"></i>
-              Defender
-              {{label}}
-              {{#if modifier}}({{numberFormat modifier sign=true}}){{/if}}
-            </a>
-          {{/each}}
+          {{#if unopposed}}
+            <p><strong>Defense:</strong> Unopposed</p>
+          {{else}}
+            <p>
+              <strong>Defense:</strong>
+              {{defense.roll}}
+              vs.
+              {{defense.target}}
+              ({{defense.sl}}
+              SL,
+              {{defense.description}})
+            </p>
+            {{#each defense.tables}}
+              <a
+                class="action-link"
+                data-action="clickTable"
+                data-modifier="{{modifier}}"
+                data-table="{{key}}"
+              >
+                <i class="fas fa-list"></i>
+                Defender
+                {{label}}
+                {{#if modifier}}({{numberFormat modifier sign=true}}){{/if}}
+              </a>
+            {{/each}}
+          {{/if}}
+          {{#if damageApplied}}
+            <p>{{{damageApplication}}}</p>
+          {{else}}
+            {{#if canApplyDamage}}
+              <button
+                type="button"
+                data-multi-attack-action="apply-damage"
+                data-result-index="{{index}}"
+              >
+                Apply Damage
+              </button>
+            {{/if}}
+          {{/if}}
         </div>
       </details>
     {{/each}}
