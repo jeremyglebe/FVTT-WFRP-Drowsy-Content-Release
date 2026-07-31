@@ -4328,70 +4328,129 @@ function yl(e) {
 	if (!(!t || typeof t != "object" || !("multiAttack" in t))) return t.multiAttack;
 }
 //#endregion
-//#region src/module/patches/wfrp/armour-migration.ts
-var bl = `${Z}.compatibility.wfrp-armour-migration`, xl = [{
-	foundryMajorVersion: "14",
-	systemId: "wfrp4e",
-	systemVersion: "9.6.3"
-}];
-function Sl(e) {
+//#region src/module/patches/runtime.ts
+function bl(e, t) {
 	if (!e) return !1;
-	let t = e.version.split(".")[0];
-	return xl.some((n) => n.foundryMajorVersion === t && n.systemId === e.system.id && n.systemVersion === e.system.version);
+	let n = e.version.split(".")[0];
+	return t.some((t) => t.foundryMajorVersion === n && t.systemId === e.system.id && t.systemVersion === e.system.version);
 }
-function Cl(e) {
-	if (Object.hasOwn(e, bl)) throw Error(`${Z} | Armour migration compatibility patch is already installed.`);
+function xl(e, t, n) {
+	let r = e.modules.get(t);
+	return r?.active === !0 && r.version === n;
 }
-function wl() {
-	let e = game;
-	if (!Sl(e)) return !1;
-	let t = CONFIG.Item.dataModels.armour;
-	if (!t) throw Error(`${Z} | WFRP armour data model is unavailable.`);
-	let n = t.migrateData;
-	Cl(n);
-	let r = function(e) {
-		return n.call(this, e), e;
-	};
-	return Object.defineProperty(r, bl, {
+function Sl(e, t, n) {
+	if (Object.hasOwn(e, t)) throw Error(`${Z} | ${n} is already installed.`);
+}
+function Cl(e, t) {
+	Object.defineProperty(e, t, {
 		configurable: !1,
 		enumerable: !1,
 		value: !0,
 		writable: !1
-	}), t.migrateData = r, console.info(`${Z} | Applied armour migration compatibility patch for Foundry ${e.version} and WFRP ${e.system.version}.`), !0;
+	});
+}
+//#endregion
+//#region src/module/patches/item-piles/sheet-class-scope.ts
+var wl = `${Z}.compatibility.item-piles-sheet-class-scope`, Tl = "item-piles", El = "3.3.4", Dl = "wfrp4e-archives3.enterprise", Ol = "wfrp4e-archives3", kl = "enterprise", Al = [{
+	foundryMajorVersion: "14",
+	systemId: "wfrp4e",
+	systemVersion: "9.6.3"
+}];
+function jl() {
+	let e = game;
+	if (!bl(e, Al) || !xl(e, Tl, El)) return !1;
+	let t = CONFIG.Actor.sheetClasses, n = t[Dl];
+	if (!n) throw Error(`${Z} | Archives III Enterprise sheet-class scope is unavailable.`);
+	if (Sl(t, wl, "Item Piles sheet-class scope compatibility patch"), Object.hasOwn(t, Ol)) throw Error(`${Z} | Item Piles sheet-class compatibility scope already exists.`);
+	return Object.defineProperty(t, Ol, {
+		configurable: !1,
+		enumerable: !1,
+		value: Object.freeze({ [kl]: n }),
+		writable: !1
+	}), Cl(t, wl), console.info(`${Z} | Applied Item Piles sheet-class scope compatibility patch for Item Piles ${El}.`), !0;
+}
+//#endregion
+//#region src/module/patches/warhammer-lib/active-effect-schema.ts
+var Ml = `${Z}.compatibility.warhammer-active-effect-schema`, Nl = "warhammer-lib", Pl = "3.3.3", Fl = [{
+	foundryMajorVersion: "14",
+	systemId: "wfrp4e",
+	systemVersion: "9.6.3"
+}];
+function Il() {
+	let e = game;
+	if (!bl(e, Fl) || !xl(e, Nl, Pl)) return !1;
+	let t = CONFIG.ActiveEffect.dataModels.base;
+	if (!t) throw Error(`${Z} | WFRP Active Effect data model is unavailable.`);
+	if (Sl(t, Ml, "Warhammer Active Effect schema compatibility patch"), t.schema.fields.changes) throw Error(`${Z} | WFRP Active Effect data model already defines the changes field.`);
+	if (t.schema.extendFields(foundry.data.ActiveEffectTypeDataModel.defineSchema()), !t.schema.fields.changes) throw Error(`${Z} | Foundry Active Effect fields did not define the required changes field.`);
+	return Cl(t, Ml), console.info(`${Z} | Applied Warhammer Active Effect schema compatibility patch for Warhammer Library ${Pl}.`), !0;
+}
+//#endregion
+//#region src/module/patches/wfrp/armour-migration.ts
+var Ll = `${Z}.compatibility.wfrp-armour-migration`, Rl = [{
+	foundryMajorVersion: "14",
+	systemId: "wfrp4e",
+	systemVersion: "9.6.3"
+}];
+function zl() {
+	let e = game;
+	if (!bl(e, Rl)) return !1;
+	let t = CONFIG.Item.dataModels.armour;
+	if (!t) throw Error(`${Z} | WFRP armour data model is unavailable.`);
+	let n = t.migrateData;
+	Sl(n, Ll, "Armour migration compatibility patch");
+	let r = function(e) {
+		return n.call(this, e), e;
+	};
+	return Cl(r, Ll), t.migrateData = r, console.info(`${Z} | Applied armour migration compatibility patch for Foundry ${e.version} and WFRP ${e.system.version}.`), !0;
+}
+//#endregion
+//#region src/module/patches/wfrp/roll-modes.ts
+var Bl = `${Z}.compatibility.wfrp-roll-modes`, Vl = [{
+	foundryMajorVersion: "14",
+	systemId: "wfrp4e",
+	systemVersion: "9.6.3"
+}];
+function Hl() {
+	let e = game;
+	if (!bl(e, Vl)) return !1;
+	let t = e.wfrp4e?.config;
+	if (!t) throw Error(`${Z} | WFRP runtime configuration is unavailable.`);
+	return Sl(t, Bl, "WFRP roll-mode compatibility patch"), t.rollModes = CONFIG.ChatMessage.modes, Cl(t, Bl), console.info(`${Z} | Applied roll-mode compatibility patch for Foundry ${e.version} and WFRP ${e.system.version}.`), !0;
 }
 //#endregion
 //#region src/module/song-magic/register-lore-of-song.ts
-var Tl = "song", El = "Song", Dl = [
+var Ul = "song", Wl = "Song", Gl = [
 	"<p>Practitioners of the Lore of Song may use <strong>Entertain (Singing)</strong>, <strong>Perform (Dancing)</strong>, or <strong>Play (Instrument)</strong> in place of <strong>Channelling</strong> when channelling Lore of Song spells. This only applies to Channelling Tests, not Casting Tests. If a Career would grant <strong>Channelling (Any)</strong>, a character with the <strong>Arcane Magic (Song)</strong> Talent may instead select one of these Skills.</p>",
 	"<p>Lore of Song spells may be cast with either <strong>Language (Magick)</strong> or <strong>Entertain (Singing)</strong>. When casting with <strong>Entertain (Singing)</strong>, the spell cannot score more SL than the caster's <strong>Language (Magick)</strong> Bonus, before any bonus SL are applied.</p>",
 	"<p>When you successfully cast a Lore of Song spell using <strong>Entertain (Singing)</strong>, <em>your Song may inspire those around you</em>: you may grant 1 Advantage each to a number of targets up to your Fellowship Bonus.</p>",
 	"<p>When you successfully cast a Lore of Song spell using <strong>Language (Magick)</strong>, <em>you find inspiration in your muse</em>: you regain 1 Resolve, up to your maximum.</p>"
 ].join("");
-function Ol() {
+function Kl() {
 	let e = game?.wfrp4e?.config;
 	e && (e.magicLores = {
 		...e.magicLores ?? {},
-		[Tl]: El
+		[Ul]: Wl
 	}, e.loreEffectDescriptions = {
 		...e.loreEffectDescriptions ?? {},
-		[Tl]: Dl
+		[Ul]: Gl
 	});
 }
 //#endregion
 //#region src/functions/unit/validate-unit-configuration.ts
-function kl(e) {
+function ql(e) {
 	let t = [];
 	return (!Number.isInteger(e.startingIndividuals) || e.startingIndividuals < 1) && t.push("Starting individuals must be a positive whole number."), (!Number.isFinite(e.sourceWounds) || e.sourceWounds <= 0) && t.push("Source Wounds must be greater than zero."), (!Number.isInteger(e.sourceAttacks) || e.sourceAttacks < 1) && t.push("Source Attacks must be a positive whole number."), (!Number.isFinite(e.sourceMovement) || e.sourceMovement < 0) && t.push("Source Movement cannot be negative."), Qs(e.sourceSize) || t.push("Source Size is invalid."), (!Number.isFinite(e.individualTokenScale) || e.individualTokenScale < .25 || e.individualTokenScale > 2.5) && t.push("Individual token scale must be between 25% and 250%."), Number.isFinite(e.individualTokenRotation) || t.push("Starting rotation of images must be a finite number of degrees."), t;
 }
 //#endregion
 //#region src/functions/unit/derive/wounds-after-reconfiguration.ts
-function Al(e, t, n) {
+function Jl(e, t, n) {
 	let r = Math.max(e - t, 0);
 	return Math.max(n - r, 0);
 }
 //#endregion
 //#region src/functions/unit/derive/token-geometry.ts
-function jl(e) {
+function Yl(e) {
 	let t = Ks[e];
 	return t < 1 ? {
 		height: 1,
@@ -4405,8 +4464,8 @@ function jl(e) {
 }
 //#endregion
 //#region src/functions/unit/derive/source-token-geometry.ts
-function Ml(e) {
-	let t = e.source.tokenGeometry, n = jl(e.source.size);
+function Xl(e) {
+	let t = e.source.tokenGeometry, n = Yl(e.source.size);
 	return {
 		height: t?.height ?? n.height,
 		lockRotation: e.source.lockRotation,
@@ -4417,12 +4476,12 @@ function Ml(e) {
 }
 //#endregion
 //#region src/module/unit/token-geometry.ts
-var Nl = "fvtt-wfrp-drowsy-content.unitTokenSync";
-async function Pl(e) {
+var Zl = "fvtt-wfrp-drowsy-content.unitTokenSync";
+async function Ql(e) {
 	let t = Q(e);
 	if (!t) return;
-	let n = jl(t.size);
-	await Il(e, {
+	let n = Yl(t.size);
+	await eu(e, {
 		height: n.height,
 		lockRotation: !1,
 		"texture.scaleX": n.scale,
@@ -4430,9 +4489,9 @@ async function Pl(e) {
 		width: n.width
 	});
 }
-async function Fl(e, t) {
-	let n = Ml(t);
-	await Il(e, {
+async function $l(e, t) {
+	let n = Xl(t);
+	await eu(e, {
 		height: n.height,
 		lockRotation: n.lockRotation,
 		"texture.scaleX": n.scaleX,
@@ -4440,24 +4499,24 @@ async function Fl(e, t) {
 		width: n.width
 	});
 }
-async function Il(e, t) {
+async function eu(e, t) {
 	if (e.isToken && e.token) {
-		await zl(e.token, t);
+		await ru(e.token, t);
 		return;
 	}
-	await Promise.all(e.getActiveTokens().map((e) => zl(e.document, t))), await e.update(Object.fromEntries(Object.entries(t).map(([e, t]) => [`prototypeToken.${e}`, t])), { [Nl]: !0 });
+	await Promise.all(e.getActiveTokens().map((e) => ru(e.document, t))), await e.update(Object.fromEntries(Object.entries(t).map(([e, t]) => [`prototypeToken.${e}`, t])), { [Zl]: !0 });
 }
-function Ll(e) {
-	return !!e[Nl];
+function tu(e) {
+	return !!e[Zl];
 }
-async function Rl(e, t, n, r) {
-	game?.user?.id !== r || Ll(n) || !Bl(t) || await Pl(e);
+async function nu(e, t, n, r) {
+	game?.user?.id !== r || tu(n) || !iu(t) || await Ql(e);
 }
-async function zl(e, t) {
+async function ru(e, t) {
 	let n = t["texture.scaleX"];
 	e.width === t.width && e.height === t.height && e.lockRotation === t.lockRotation && e.texture.scaleX === n && e.texture.scaleY === t["texture.scaleY"] || await e.update(t);
 }
-function Bl(e) {
+function iu(e) {
 	if ("system.status.wounds.value" in e) return !0;
 	let t = e.system;
 	if (typeof t != "object" || !t) return !1;
@@ -4468,7 +4527,7 @@ function Bl(e) {
 }
 //#endregion
 //#region src/functions/unit/derive/formation-layout.ts
-function Vl({ height: e, individuals: t, startX: n, startY: r, width: i }) {
+function au({ height: e, individuals: t, startX: n, startY: r, width: i }) {
 	if (t < 1) return [];
 	let a = Math.ceil(Math.sqrt(t)), o = Math.ceil(t / a), s = i / a, c = e / o;
 	return Array.from({ length: t }, (e, t) => {
@@ -4483,8 +4542,8 @@ function Vl({ height: e, individuals: t, startX: n, startY: r, width: i }) {
 }
 //#endregion
 //#region src/functions/unit/derive/individual-token-size.ts
-function Hl({ availableHeight: e, availableWidth: t, currentSize: n, imageHeight: r, imageWidth: i, source: a }) {
-	let o = jl(a.size), s = (a.tokenGeometry?.width ?? o.width) * Math.abs(a.tokenGeometry?.scaleX ?? o.scale), c = (a.tokenGeometry?.height ?? o.height) * Math.abs(a.tokenGeometry?.scaleY ?? o.scale), l = jl(n), u = l.width * l.scale, d = l.height * l.scale, f = s / u * t * a.individualTokenScale, p = c / d * e * a.individualTokenScale, m = i / r;
+function ou({ availableHeight: e, availableWidth: t, currentSize: n, imageHeight: r, imageWidth: i, source: a }) {
+	let o = Yl(a.size), s = (a.tokenGeometry?.width ?? o.width) * Math.abs(a.tokenGeometry?.scaleX ?? o.scale), c = (a.tokenGeometry?.height ?? o.height) * Math.abs(a.tokenGeometry?.scaleY ?? o.scale), l = Yl(n), u = l.width * l.scale, d = l.height * l.scale, f = s / u * t * a.individualTokenScale, p = c / d * e * a.individualTokenScale, m = i / r;
 	return m > f / p ? {
 		height: f / m,
 		width: f
@@ -4495,77 +4554,77 @@ function Hl({ availableHeight: e, availableWidth: t, currentSize: n, imageHeight
 }
 //#endregion
 //#region src/functions/unit/derive/rotation.ts
-function Ul(e) {
+function su(e) {
 	return e * Math.PI / 180;
 }
 //#endregion
 //#region src/module/unit/token-mosaic.ts
-var $ = 512, Wl = 26, Gl = 22, Kl = /* @__PURE__ */ new WeakMap(), ql = /* @__PURE__ */ new WeakMap();
-async function Jl(e) {
+var $ = 512, cu = 26, lu = 22, uu = /* @__PURE__ */ new WeakMap(), du = /* @__PURE__ */ new WeakMap();
+async function fu(e) {
 	let t = e.actor ? Q(e.actor) : void 0;
 	if (!t) {
-		Xl(e);
+		mu(e);
 		return;
 	}
-	let n = eu(t), r = Kl.get(e);
+	let n = vu(t), r = uu.get(e);
 	if (r?.key === n) {
 		e.mesh.texture = r.texture;
 		return;
 	}
-	let i = (ql.get(e) ?? 0) + 1;
-	ql.set(e, i);
+	let i = (du.get(e) ?? 0) + 1;
+	du.set(e, i);
 	try {
-		let a = await Ql(t);
-		if (ql.get(e) !== i) {
+		let a = await gu(t);
+		if (du.get(e) !== i) {
 			a.destroy(!0);
 			return;
 		}
 		let o = r?.originalMeshTexture ?? e.mesh.texture;
-		Zl(e), e.mesh.texture = a, Kl.set(e, {
+		hu(e), e.mesh.texture = a, uu.set(e, {
 			generation: i,
 			key: n,
 			originalMeshTexture: o,
 			texture: a
 		});
 	} catch (n) {
-		console.error(`Could not render Unit token mosaic from ${t.source.tokenImage}.`, n), ql.get(e) === i && Zl(e);
+		console.error(`Could not render Unit token mosaic from ${t.source.tokenImage}.`, n), du.get(e) === i && hu(e);
 	}
 }
-async function Yl(e) {
-	await Promise.all(e.getActiveTokens().map(Jl));
+async function pu(e) {
+	await Promise.all(e.getActiveTokens().map(fu));
 }
-function Xl(e) {
-	ql.set(e, (ql.get(e) ?? 0) + 1), Zl(e);
+function mu(e) {
+	du.set(e, (du.get(e) ?? 0) + 1), hu(e);
 }
-function Zl(e) {
-	let t = Kl.get(e);
-	t && (e.mesh.texture = t.originalMeshTexture, t.texture.destroy(!0), Kl.delete(e));
+function hu(e) {
+	let t = uu.get(e);
+	t && (e.mesh.texture = t.originalMeshTexture, t.texture.destroy(!0), uu.delete(e));
 }
-async function Ql(e) {
-	let t = await au(e.source.tokenImage), n = document.createElement("canvas");
+async function gu(e) {
+	let t = await Cu(e.source.tokenImage), n = document.createElement("canvas");
 	n.width = $, n.height = $;
 	let r = n.getContext("2d");
 	if (!r) throw Error("The browser did not provide a 2D canvas context.");
-	return tu(r), e.currentIndividuals > 0 ? $l(r, t, e) : ru(r), nu(r), iu(r, e.currentIndividuals), PIXI.Texture.from(n);
+	return yu(r), e.currentIndividuals > 0 ? _u(r, t, e) : xu(r), bu(r), Su(r, e.currentIndividuals), PIXI.Texture.from(n);
 }
-function $l(e, t, n) {
-	let r = n.currentIndividuals, i = $ - Gl * 2, a = $ - Gl * 2 - Wl, o = Vl({
+function _u(e, t, n) {
+	let r = n.currentIndividuals, i = $ - lu * 2, a = $ - lu * 2 - cu, o = au({
 		height: a,
 		individuals: r,
-		startX: Gl,
+		startX: lu,
 		startY: 48,
 		width: i
-	}), s = Hl({
+	}), s = ou({
 		availableHeight: a,
 		availableWidth: i,
 		currentSize: n.size,
 		imageHeight: t.naturalHeight,
 		imageWidth: t.naturalWidth,
 		source: n.source
-	}), c = Ul(n.source.individualTokenRotation);
+	}), c = su(n.source.individualTokenRotation);
 	for (let n of o) e.save(), e.translate(n.x, n.y), e.rotate(c), e.drawImage(t, -s.width / 2, -s.height / 2, Math.max(s.width, .5), Math.max(s.height, .5)), e.restore();
 }
-function eu(e) {
+function vu(e) {
 	let t = e.source.tokenGeometry;
 	return [
 		e.source.tokenImage,
@@ -4580,19 +4639,19 @@ function eu(e) {
 		t?.scaleY
 	].join("|");
 }
-function tu(e) {
+function yu(e) {
 	e.fillStyle = "rgba(33, 24, 19, 0.82)", e.fillRect(0, 0, $, $), e.strokeStyle = "rgba(217, 164, 79, 0.9)", e.lineWidth = 8, e.strokeRect(8, 8, $ - 16, $ - 16);
 }
-function nu(e) {
+function bu(e) {
 	e.fillStyle = "#d9a44f", e.beginPath(), e.moveTo($ / 2, 8), e.lineTo($ / 2 - 24, 38), e.lineTo(280, 38), e.closePath(), e.fill();
 }
-function ru(e) {
+function xu(e) {
 	e.strokeStyle = "#782e22", e.lineCap = "round", e.lineWidth = 38, e.beginPath(), e.moveTo(130, 130), e.lineTo(382, 382), e.moveTo(382, 130), e.lineTo(130, 382), e.stroke();
 }
-function iu(e, t) {
+function Su(e, t) {
 	e.fillStyle = "rgba(33, 24, 19, 0.9)", e.fillRect($ - 114, $ - 60, 94, 40), e.fillStyle = "#f1e1ce", e.font = "bold 28px sans-serif", e.textAlign = "right", e.textBaseline = "middle", e.fillText(String(t), $ - 30, $ - 40);
 }
-function au(e) {
+function Cu(e) {
 	return new Promise((t, n) => {
 		let r = new Image();
 		r.crossOrigin = "anonymous", r.addEventListener("load", () => t(r), { once: !0 }), r.addEventListener("error", () => n(/* @__PURE__ */ Error(`Unable to load ${e}.`)), { once: !0 }), r.src = e;
@@ -4600,17 +4659,17 @@ function au(e) {
 }
 //#endregion
 //#region src/module/unit/lifecycle.ts
-var ou = `${Z}.unitUpdate`, su = `${Z}.previousUnitConfiguration`, cu = `${Z}.managedUnitUpdate`;
-function lu(e) {
+var wu = `${Z}.unitUpdate`, Tu = `${Z}.previousUnitConfiguration`, Eu = `${Z}.managedUnitUpdate`;
+function Du(e) {
 	if (!ic(e) || !e.parent) return;
 	let t = e.parent;
-	if (t.type !== "creature" && t.type !== "npc") return yu("The Unit trait can only be added to Creature and NPC actors."), !1;
-	if (ac(t)) return yu(`${t.name} already has a Unit trait.`), !1;
+	if (t.type !== "creature" && t.type !== "npc") return Lu("The Unit trait can only be added to Creature and NPC actors."), !1;
+	if (ac(t)) return Lu(`${t.name} already has a Unit trait.`), !1;
 	let n = $s(e.system.specification.value);
-	if (!n) return yu("A Unit must begin with a positive whole number of individuals."), !1;
+	if (!n) return Lu("A Unit must begin with a positive whole number of individuals."), !1;
 	let r = t.system.details.size.value;
-	if (!Qs(r)) return yu(`Cannot create a Unit from unsupported source Size “${r}”.`), !1;
-	let i = t.isToken && t.token ? t.token : t.prototypeToken, a = Number(t.system.details.move.value), o = Number(t.system.status.wounds.max), s = kl({
+	if (!Qs(r)) return Lu(`Cannot create a Unit from unsupported source Size “${r}”.`), !1;
+	let i = t.isToken && t.token ? t.token : t.prototypeToken, a = Number(t.system.details.move.value), o = Number(t.system.status.wounds.max), s = ql({
 		individualTokenRotation: 180,
 		individualTokenScale: Bs,
 		sourceAttacks: 1,
@@ -4619,7 +4678,7 @@ function lu(e) {
 		sourceWounds: o,
 		startingIndividuals: n
 	});
-	if (s.length > 0) return yu(`Cannot form this Unit. ${s.join(" ")}`), !1;
+	if (s.length > 0) return Lu(`Cannot form this Unit. ${s.join(" ")}`), !1;
 	let c = {
 		schemaVersion: 1,
 		source: {
@@ -4641,8 +4700,8 @@ function lu(e) {
 	};
 	e.updateSource({ [ec]: c });
 }
-async function uu(e, t) {
-	if (!ic(e) || !e.parent || !vu(t)) return;
+async function Ou(e, t) {
+	if (!ic(e) || !e.parent || !Iu(t)) return;
 	let n = rc(e), r = $s(e.system.specification.value);
 	if (!n || !r) return;
 	let i = n.source.wounds * r;
@@ -4650,88 +4709,88 @@ async function uu(e, t) {
 		"system.status.wounds.max": i,
 		"system.status.wounds.value": i,
 		"prototypeToken.lockRotation": !1
-	}, { [ou]: !0 }), await Pl(e.parent), bu(`${e.parent.name} formed a Unit of ${r} individuals.`);
+	}, { [wu]: !0 }), await Ql(e.parent), Ru(`${e.parent.name} formed a Unit of ${r} individuals.`);
 }
-function du(e, t, n) {
+function ku(e, t, n) {
 	if (!ic(e)) return;
-	if (_u(t)) return yu("A Unit cannot be disabled. Delete the trait to restore its source creature."), !1;
-	let r = gu(t);
-	if (!(r === void 0 && !pu(t))) {
-		if (r !== void 0 && !$s(r)) return yu("A Unit must contain a positive whole number of starting individuals."), !1;
-		n[su] = {
+	if (Fu(t)) return Lu("A Unit cannot be disabled. Delete the trait to restore its source creature."), !1;
+	let r = Pu(t);
+	if (!(r === void 0 && !ju(t))) {
+		if (r !== void 0 && !$s(r)) return Lu("A Unit must contain a positive whole number of starting individuals."), !1;
+		n[Tu] = {
 			count: $s(e.system.specification.value),
 			stored: rc(e)
 		};
 	}
 }
-async function fu(e, t, n, r) {
+async function Au(e, t, n, r) {
 	if (!ic(e) || !e.parent) return;
-	let i = pu(t);
-	if (!vu(r)) {
-		i && await Yl(e.parent);
+	let i = ju(t);
+	if (!Iu(r)) {
+		i && await pu(e.parent);
 		return;
 	}
-	if (n[cu] || gu(t) === void 0 && !i) return;
-	let a = n[su];
-	if (!mu(a)) return;
+	if (n[Eu] || Pu(t) === void 0 && !i) return;
+	let a = n[Tu];
+	if (!Mu(a)) return;
 	let o = a.count, s = $s(e.system.specification.value), c = rc(e);
 	if (!s || !c) return;
 	let l = a.stored.source.wounds * o, u = c.source.wounds * s;
 	await e.parent.update({
 		"system.status.wounds.max": u,
-		"system.status.wounds.value": Al(l, e.parent.system.status.wounds.value, u)
-	}, { [ou]: !0 }), await Pl(e.parent), i && await Yl(e.parent);
+		"system.status.wounds.value": Jl(l, e.parent.system.status.wounds.value, u)
+	}, { [wu]: !0 }), await Ql(e.parent), i && await pu(e.parent);
 }
-function pu(e) {
+function ju(e) {
 	if (ec in e || Object.keys(e).some((e) => e.startsWith(`${ec}.`))) return !0;
 	let t = e.flags;
 	if (typeof t != "object" || !t) return !1;
 	let n = t[Z];
 	return typeof n == "object" && !!n && "unit" in n;
 }
-function mu(e) {
+function Mu(e) {
 	if (typeof e != "object" || !e) return !1;
 	let t = e;
 	return !!(t.count && t.stored);
 }
-async function hu(e, t) {
-	if (!ic(e) || !e.parent || !vu(t)) return;
+async function Nu(e, t) {
+	if (!ic(e) || !e.parent || !Iu(t)) return;
 	let n = rc(e);
 	n && (await e.parent.update({
 		"system.status.wounds.max": n.source.wounds,
 		"system.status.wounds.value": Math.min(e.parent.system.status.wounds.value, n.source.wounds)
-	}, { [ou]: !0 }), await Fl(e.parent, n));
+	}, { [wu]: !0 }), await $l(e.parent, n));
 }
-function gu(e) {
+function Pu(e) {
 	if ("system.specification.value" in e) return e["system.specification.value"];
 	let t = e.system;
 	if (typeof t != "object" || !t) return;
 	let n = t.specification;
 	if (!(typeof n != "object" || !n)) return n.value;
 }
-function _u(e) {
+function Fu(e) {
 	if (e["system.disabled"] === !0 || e["system.enabled"] === !1) return !0;
 	let t = e.system;
 	if (typeof t != "object" || !t) return !1;
 	let n = t;
 	return n.disabled === !0 || n.enabled === !1;
 }
-function vu(e) {
+function Iu(e) {
 	return game?.user?.id === e;
 }
-function yu(e) {
+function Lu(e) {
 	ui.notifications.error(e);
 }
-function bu(e) {
+function Ru(e) {
 	ui.notifications.info(e);
 }
 //#endregion
 //#region src/functions/unit/token-image-change.ts
-function xu(e, t) {
-	let n = t in e ? e[t] : Cu(e, t.split("."));
+function zu(e, t) {
+	let n = t in e ? e[t] : Vu(e, t.split("."));
 	return typeof n == "string" ? n : void 0;
 }
-function Su(e, t) {
+function Bu(e, t) {
 	if (e.source.tokenImage !== t) return {
 		...e,
 		source: {
@@ -4740,7 +4799,7 @@ function Su(e, t) {
 		}
 	};
 }
-function Cu(e, t) {
+function Vu(e, t) {
 	let n = e;
 	for (let e of t) {
 		if (typeof n != "object" || !n) return;
@@ -4750,34 +4809,34 @@ function Cu(e, t) {
 }
 //#endregion
 //#region src/module/unit/image-sync.ts
-var wu = "prototypeToken.texture.src", Tu = "texture.src";
-async function Eu(e, t, n) {
-	let r = xu(t, wu);
-	game?.user?.id !== n || r === void 0 || await Ou(e, r);
+var Hu = "prototypeToken.texture.src", Uu = "texture.src";
+async function Wu(e, t, n) {
+	let r = zu(t, Hu);
+	game?.user?.id !== n || r === void 0 || await Ku(e, r);
 }
-async function Du(e, t, n) {
-	let r = xu(t, Tu);
-	game?.user?.id !== n || !e.actor || r === void 0 || await Ou(e.actor, r);
+async function Gu(e, t, n) {
+	let r = zu(t, Uu);
+	game?.user?.id !== n || !e.actor || r === void 0 || await Ku(e.actor, r);
 }
-async function Ou(e, t) {
+async function Ku(e, t) {
 	let n = ac(e), r = n ? rc(n) : void 0;
 	if (!n || !r) return;
-	let i = Su(r, t);
-	i && (await n.update({ [ec]: i }, { [cu]: !0 }), await Yl(e));
+	let i = Bu(r, t);
+	i && (await n.update({ [ec]: i }, { [Eu]: !0 }), await pu(e));
 }
 //#endregion
 //#region src/module/unit/register-hooks.ts
-function ku() {
-	Hooks.on("preCreateItem", (...e) => lu(e[0])), Hooks.on("createItem", (...e) => uu(e[0], e[3])), Hooks.on("preUpdateItem", (...e) => du(e[0], e[1], e[2])), Hooks.on("updateItem", (...e) => fu(e[0], e[1], e[2], e[3])), Hooks.on("deleteItem", (...e) => hu(e[0], e[2])), Hooks.on("updateActor", (...e) => Rl(e[0], e[1], e[2], e[3])), Hooks.on("updateActor", (...e) => Eu(e[0], e[1], e[3])), Hooks.on("updateToken", (...e) => Du(e[0], e[1], e[3])), Hooks.on("refreshToken", (...e) => Jl(e[0])), Hooks.on("destroyToken", (...e) => Xl(e[0]));
+function qu() {
+	Hooks.on("preCreateItem", (...e) => Du(e[0])), Hooks.on("createItem", (...e) => Ou(e[0], e[3])), Hooks.on("preUpdateItem", (...e) => ku(e[0], e[1], e[2])), Hooks.on("updateItem", (...e) => Au(e[0], e[1], e[2], e[3])), Hooks.on("deleteItem", (...e) => Nu(e[0], e[2])), Hooks.on("updateActor", (...e) => nu(e[0], e[1], e[2], e[3])), Hooks.on("updateActor", (...e) => Wu(e[0], e[1], e[3])), Hooks.on("updateToken", (...e) => Gu(e[0], e[1], e[3])), Hooks.on("refreshToken", (...e) => fu(e[0])), Hooks.on("destroyToken", (...e) => mu(e[0]));
 }
 //#endregion
 //#region src/functions/unit/derive/individual-adjustment.ts
-function Au(e, t, n, r) {
+function Ju(e, t, n, r) {
 	return Math.min(Math.max(e + t * r, 0), n);
 }
 //#endregion
 //#region src/functions/unit/map-unit-sheet-context.ts
-function ju(e) {
+function Yu(e) {
 	return e ? {
 		active: !0,
 		attacks: e.attacks,
@@ -4800,7 +4859,7 @@ function ju(e) {
 }
 //#endregion
 //#region src/state/apps/unit-manager/unit-manager-store.ts
-var Mu = cs("unit-manager", () => {
+var Xu = cs("unit-manager", () => {
 	let e = /* @__PURE__ */ Kt(), t = /* @__PURE__ */ Kt(""), n = /* @__PURE__ */ Kt(!1), r = /* @__PURE__ */ It({
 		individualTokenRotation: 180,
 		individualTokenScale: Bs,
@@ -4825,19 +4884,19 @@ var Mu = cs("unit-manager", () => {
 		unit: e,
 		woundPercentage: i
 	};
-}), Nu = { class: "tw:text-2xl tw:font-semibold" }, Pu = {
+}), Zu = { class: "tw:text-2xl tw:font-semibold" }, Qu = {
 	key: 0,
 	class: "tw:dui-alert tw:dui-alert-error",
 	role: "alert"
-}, Fu = {
+}, $u = {
 	key: 1,
 	class: "tw:dui-alert tw:dui-alert-error",
 	role: "alert"
-}, Iu = { class: "tw:dui-stats tw:dui-stats-horizontal tw:w-full" }, Lu = { class: "tw:dui-stat" }, Ru = { class: "tw:dui-stat-value" }, zu = { class: "tw:dui-stat-desc" }, Bu = { class: "tw:dui-stat" }, Vu = { class: "tw:dui-stat-value" }, Hu = { class: "tw:dui-stat-desc" }, Uu = { class: "tw:dui-stat" }, Wu = { class: "tw:dui-stat-value" }, Gu = { class: "tw:dui-stat-desc" }, Ku = { class: "tw:text-lg tw:font-semibold" }, qu = { class: "tw:text-lg tw:font-semibold" }, Ju = { class: "tw:text-lg tw:font-semibold" }, Yu = ["value"], Xu = { class: "tw:dui-fieldset" }, Zu = { class: "tw:dui-fieldset" }, Qu = ["value"], $u = { class: "tw:dui-fieldset" }, ed = { class: "tw:dui-fieldset" }, td = { class: "tw:dui-fieldset" }, nd = { class: "tw:dui-fieldset" }, rd = { class: "tw:dui-fieldset tw:md:col-span-2" }, id = { class: "tw:flex tw:items-center tw:gap-3" }, ad = [
+}, ed = { class: "tw:dui-stats tw:dui-stats-horizontal tw:w-full" }, td = { class: "tw:dui-stat" }, nd = { class: "tw:dui-stat-value" }, rd = { class: "tw:dui-stat-desc" }, id = { class: "tw:dui-stat" }, ad = { class: "tw:dui-stat-value" }, od = { class: "tw:dui-stat-desc" }, sd = { class: "tw:dui-stat" }, cd = { class: "tw:dui-stat-value" }, ld = { class: "tw:dui-stat-desc" }, ud = { class: "tw:text-lg tw:font-semibold" }, dd = { class: "tw:text-lg tw:font-semibold" }, fd = { class: "tw:text-lg tw:font-semibold" }, pd = ["value"], md = { class: "tw:dui-fieldset" }, hd = { class: "tw:dui-fieldset" }, gd = ["value"], _d = { class: "tw:dui-fieldset" }, vd = { class: "tw:dui-fieldset" }, yd = { class: "tw:dui-fieldset" }, bd = { class: "tw:dui-fieldset" }, xd = { class: "tw:dui-fieldset tw:md:col-span-2" }, Sd = { class: "tw:flex tw:items-center tw:gap-3" }, Cd = [
 	"max",
 	"min",
 	"step"
-], od = { class: "tw:w-14 tw:text-right tw:font-semibold tw:tabular-nums" }, sd = ["disabled"], cd = /* @__PURE__ */ Wn({
+], wd = { class: "tw:w-14 tw:text-right tw:font-semibold tw:tabular-nums" }, Td = ["disabled"], Ed = /* @__PURE__ */ Wn({
 	__name: "UnitManagerApp",
 	props: {
 		actorName: {},
@@ -4845,7 +4904,7 @@ var Mu = cs("unit-manager", () => {
 		save: { type: Function }
 	},
 	setup(e) {
-		let t = e, n = Mu();
+		let t = e, n = Xu();
 		n.initialize(t.initialState);
 		let r = Object.entries(Gs), i = Ta(() => n.unit), a = Ta(() => Math.round(n.configuration.individualTokenScale * 100));
 		async function o() {
@@ -4865,24 +4924,24 @@ var Mu = cs("unit-manager", () => {
 			onSubmit: Co(o, ["prevent"])
 		}, {
 			default: B(() => [
-				J("header", null, [J("h1", Nu, k(e.actorName) + " Unit", 1), s[7] ||= J("p", { class: "tw:text-sm tw:opacity-75" }, " Current values respond to Wounds. Source values remain fixed until you save changes here. ", -1)]),
-				i.value.destroyed ? (K(), q("div", Pu, [...s[8] ||= [J("span", null, "This Unit has no remaining individuals and is destroyed.", -1)]])) : Qi("", !0),
-				L(n).error ? (K(), q("div", Fu, [J("span", null, k(L(n).error), 1)])) : Qi("", !0),
-				J("div", Iu, [
-					J("div", Lu, [
+				J("header", null, [J("h1", Zu, k(e.actorName) + " Unit", 1), s[7] ||= J("p", { class: "tw:text-sm tw:opacity-75" }, " Current values respond to Wounds. Source values remain fixed until you save changes here. ", -1)]),
+				i.value.destroyed ? (K(), q("div", Qu, [...s[8] ||= [J("span", null, "This Unit has no remaining individuals and is destroyed.", -1)]])) : Qi("", !0),
+				L(n).error ? (K(), q("div", $u, [J("span", null, k(L(n).error), 1)])) : Qi("", !0),
+				J("div", ed, [
+					J("div", td, [
 						s[9] ||= J("div", { class: "tw:dui-stat-title" }, "Individuals", -1),
-						J("div", Ru, k(i.value.currentIndividuals), 1),
-						J("div", zu, "of " + k(i.value.source.startingIndividuals), 1)
+						J("div", nd, k(i.value.currentIndividuals), 1),
+						J("div", rd, "of " + k(i.value.source.startingIndividuals), 1)
 					]),
-					J("div", Bu, [
+					J("div", id, [
 						s[10] ||= J("div", { class: "tw:dui-stat-title" }, "Ranks", -1),
-						J("div", Vu, k(i.value.ranks), 1),
-						J("div", Hu, k(i.value.rankIncrement) + " individuals each", 1)
+						J("div", ad, k(i.value.ranks), 1),
+						J("div", od, k(i.value.rankIncrement) + " individuals each", 1)
 					]),
-					J("div", Uu, [
+					J("div", sd, [
 						s[11] ||= J("div", { class: "tw:dui-stat-title" }, "Attacks", -1),
-						J("div", Wu, k(i.value.attacks), 1),
-						J("div", Gu, " +" + k(i.value.rankBonusSL) + " SL after successful eligible Tests ", 1)
+						J("div", cd, k(i.value.attacks), 1),
+						J("div", ld, " +" + k(i.value.rankBonusSL) + " SL after successful eligible Tests ", 1)
 					])
 				]),
 				Y(hs, {
@@ -4896,9 +4955,9 @@ var Mu = cs("unit-manager", () => {
 							gap: "sm"
 						}, {
 							default: B(() => [
-								J("div", null, [s[12] ||= J("div", { class: "tw:text-xs tw:uppercase tw:opacity-60" }, "Wounds", -1), J("div", Ku, k(i.value.currentWounds) + " / " + k(i.value.maximumWounds), 1)]),
-								J("div", null, [s[13] ||= J("div", { class: "tw:text-xs tw:uppercase tw:opacity-60" }, "Unit Size", -1), J("div", qu, k(L(Gs)[i.value.size]), 1)]),
-								J("div", null, [s[14] ||= J("div", { class: "tw:text-xs tw:uppercase tw:opacity-60" }, "Turning Cost", -1), J("div", Ju, k(i.value.turningCost) + " Movement", 1)])
+								J("div", null, [s[12] ||= J("div", { class: "tw:text-xs tw:uppercase tw:opacity-60" }, "Wounds", -1), J("div", ud, k(i.value.currentWounds) + " / " + k(i.value.maximumWounds), 1)]),
+								J("div", null, [s[13] ||= J("div", { class: "tw:text-xs tw:uppercase tw:opacity-60" }, "Unit Size", -1), J("div", dd, k(L(Gs)[i.value.size]), 1)]),
+								J("div", null, [s[14] ||= J("div", { class: "tw:text-xs tw:uppercase tw:opacity-60" }, "Turning Cost", -1), J("div", fd, k(i.value.turningCost) + " Movement", 1)])
 							]),
 							_: 1
 						}),
@@ -4906,7 +4965,7 @@ var Mu = cs("unit-manager", () => {
 							class: "tw:dui-progress tw:w-full",
 							max: 100,
 							value: L(n).woundPercentage
-						}, null, 8, Yu),
+						}, null, 8, pd),
 						s[15] ||= J("p", { class: "tw:text-xs tw:opacity-70" }, " Change current Wounds on the actor sheet. A normal 180° turn costs twice the displayed Turning Cost; Directed Manoeuvre can reduce it to one cost. Movement spending, manoeuvre Tests, Attacks used, and flank or rear bonuses remain manual. ", -1)
 					]),
 					_: 1
@@ -4919,13 +4978,13 @@ var Mu = cs("unit-manager", () => {
 					actions: B(() => [J("button", {
 						class: "tw:dui-btn tw:dui-btn-primary tw:dui-btn-sm",
 						disabled: L(n).saving
-					}, k(L(n).saving ? "Saving…" : "Save Unit"), 9, sd)]),
+					}, k(L(n).saving ? "Saving…" : "Save Unit"), 9, Td)]),
 					default: B(() => [Y(_s, {
 						columns: "two",
 						gap: "sm"
 					}, {
 						default: B(() => [
-							J("fieldset", Xu, [s[16] ||= J("legend", { class: "tw:dui-fieldset-legend" }, "Starting individuals", -1), V(J("input", {
+							J("fieldset", md, [s[16] ||= J("legend", { class: "tw:dui-fieldset-legend" }, "Starting individuals", -1), V(J("input", {
 								"onUpdate:modelValue": s[0] ||= (e) => L(n).configuration.startingIndividuals = e,
 								class: "tw:dui-input tw:dui-input-sm tw:w-full",
 								min: "1",
@@ -4938,14 +4997,14 @@ var Mu = cs("unit-manager", () => {
 								void 0,
 								{ number: !0 }
 							]])]),
-							J("fieldset", Zu, [s[17] ||= J("legend", { class: "tw:dui-fieldset-legend" }, "Source Size", -1), V(J("select", {
+							J("fieldset", hd, [s[17] ||= J("legend", { class: "tw:dui-fieldset-legend" }, "Source Size", -1), V(J("select", {
 								"onUpdate:modelValue": s[1] ||= (e) => L(n).configuration.sourceSize = e,
 								class: "tw:dui-select tw:dui-select-sm tw:w-full"
 							}, [(K(!0), q(W, null, yr(L(r), ([e, t]) => (K(), q("option", {
 								key: e,
 								value: e
-							}, k(t), 9, Qu))), 128))], 512), [[vo, L(n).configuration.sourceSize]])]),
-							J("fieldset", $u, [s[18] ||= J("legend", { class: "tw:dui-fieldset-legend" }, "Source Wounds", -1), V(J("input", {
+							}, k(t), 9, gd))), 128))], 512), [[vo, L(n).configuration.sourceSize]])]),
+							J("fieldset", _d, [s[18] ||= J("legend", { class: "tw:dui-fieldset-legend" }, "Source Wounds", -1), V(J("input", {
 								"onUpdate:modelValue": s[2] ||= (e) => L(n).configuration.sourceWounds = e,
 								class: "tw:dui-input tw:dui-input-sm tw:w-full",
 								min: "0.01",
@@ -4958,7 +5017,7 @@ var Mu = cs("unit-manager", () => {
 								void 0,
 								{ number: !0 }
 							]])]),
-							J("fieldset", ed, [
+							J("fieldset", vd, [
 								s[19] ||= J("legend", { class: "tw:dui-fieldset-legend" }, "Source Attacks", -1),
 								V(J("input", {
 									"onUpdate:modelValue": s[3] ||= (e) => L(n).configuration.sourceAttacks = e,
@@ -4975,7 +5034,7 @@ var Mu = cs("unit-manager", () => {
 								]]),
 								s[20] ||= J("p", { class: "tw:dui-label" }, "WFRP has no native Attacks field, so Unit records it here.", -1)
 							]),
-							J("fieldset", td, [s[21] ||= J("legend", { class: "tw:dui-fieldset-legend" }, "Source Movement", -1), V(J("input", {
+							J("fieldset", yd, [s[21] ||= J("legend", { class: "tw:dui-fieldset-legend" }, "Source Movement", -1), V(J("input", {
 								"onUpdate:modelValue": s[4] ||= (e) => L(n).configuration.sourceMovement = e,
 								class: "tw:dui-input tw:dui-input-sm tw:w-full",
 								min: "0",
@@ -4988,7 +5047,7 @@ var Mu = cs("unit-manager", () => {
 								void 0,
 								{ number: !0 }
 							]])]),
-							J("fieldset", nd, [
+							J("fieldset", bd, [
 								s[22] ||= J("legend", { class: "tw:dui-fieldset-legend" }, "Individual image orientation", -1),
 								s[23] ||= J("label", {
 									class: "tw:dui-label",
@@ -5009,9 +5068,9 @@ var Mu = cs("unit-manager", () => {
 								]]),
 								s[24] ||= J("p", { class: "tw:dui-label" }, " Positive values rotate clockwise. 0° preserves the source art; 180° turns downward-facing art toward the Unit’s front. ", -1)
 							]),
-							J("fieldset", rd, [
+							J("fieldset", xd, [
 								s[25] ||= J("legend", { class: "tw:dui-fieldset-legend" }, "Individual token scale", -1),
-								J("div", id, [V(J("input", {
+								J("div", Sd, [V(J("input", {
 									"onUpdate:modelValue": s[6] ||= (e) => L(n).configuration.individualTokenScale = e,
 									"aria-label": "Individual token scale",
 									class: "tw:dui-range tw:w-full",
@@ -5019,12 +5078,12 @@ var Mu = cs("unit-manager", () => {
 									min: L(Vs),
 									step: L(Us),
 									type: "range"
-								}, null, 8, ad), [[
+								}, null, 8, Cd), [[
 									_o,
 									L(n).configuration.individualTokenScale,
 									void 0,
 									{ number: !0 }
-								]]), J("output", od, k(a.value) + "% ", 1)]),
+								]]), J("output", wd, k(a.value) + "% ", 1)]),
 								s[26] ||= J("p", { class: "tw:dui-label" }, " 100% matches the source token’s recorded grid scale. Increase it for larger, overlapping individuals; decrease it for a clearer formation. ", -1)
 							])
 						]),
@@ -5039,8 +5098,8 @@ var Mu = cs("unit-manager", () => {
 });
 //#endregion
 //#region src/module/unit/save-configuration.ts
-async function ld(e, t) {
-	let n = kl(t);
+async function Dd(e, t) {
+	let n = ql(t);
 	if (n.length > 0) throw Error(n.join(" "));
 	let r = ac(e);
 	if (!r) throw Error(`${e.name} does not have a Unit trait.`);
@@ -5059,21 +5118,21 @@ async function ld(e, t) {
 			wounds: t.sourceWounds,
 			...i.source.tokenGeometry ? { tokenGeometry: i.source.tokenGeometry } : {}
 		}
-	}, s = t.sourceWounds * t.startingIndividuals, c = Al(a.maximumWounds, e.system.status.wounds.value, s);
+	}, s = t.sourceWounds * t.startingIndividuals, c = Jl(a.maximumWounds, e.system.status.wounds.value, s);
 	await r.update({
 		[ec]: o,
 		"system.specification.value": String(t.startingIndividuals)
-	}, { [cu]: !0 }), await e.update({
+	}, { [Eu]: !0 }), await e.update({
 		"system.status.wounds.max": s,
 		"system.status.wounds.value": c
 	});
 	let l = Q(e);
 	if (!l) throw Error(`Could not prepare ${e.name}'s updated Unit state.`);
-	return await Yl(e), l;
+	return await pu(e), l;
 }
 //#endregion
 //#region src/module/apps/unit-manager/UnitManagementApplication.ts
-var ud = class extends xs {
+var Od = class extends xs {
 	static DEFAULT_OPTIONS = {
 		id: "fvtt-wfrp-drowsy-content-unit-manager",
 		position: {
@@ -5090,7 +5149,7 @@ var ud = class extends xs {
 		super({ id: `fvtt-wfrp-drowsy-content-unit-manager-${e.id}` }), this.#e = e;
 	}
 	getVueComponent() {
-		return cd;
+		return Ed;
 	}
 	getVueProps() {
 		let e = Q(this.#e);
@@ -5098,13 +5157,13 @@ var ud = class extends xs {
 		return {
 			actorName: this.#e.name,
 			initialState: e,
-			save: (e) => ld(this.#e, e)
+			save: (e) => Dd(this.#e, e)
 		};
 	}
 };
 //#endregion
 //#region src/module/unit/actor-sheet.ts
-function dd(e, t) {
+function kd(e, t) {
 	let n = class extends e {
 		static DEFAULT_OPTIONS = {
 			actions: {
@@ -5132,10 +5191,10 @@ function dd(e, t) {
 		};
 		async _prepareContext(e) {
 			let t = await super._prepareContext(e);
-			return t.unit = ju(Q(this.actor)), t;
+			return t.unit = Yu(Q(this.actor)), t;
 		}
 		static async manageUnit() {
-			await new ud(this.actor).render(!0);
+			await new Od(this.actor).render(!0);
 		}
 		static async multiAttack() {
 			try {
@@ -5145,10 +5204,10 @@ function dd(e, t) {
 			}
 		}
 		static async killIndividual() {
-			await fd(this.actor, -1);
+			await Ad(this.actor, -1);
 		}
 		static async reviveIndividual() {
-			await fd(this.actor, 1);
+			await Ad(this.actor, 1);
 		}
 	};
 	return Object.defineProperty(n, "name", {
@@ -5156,22 +5215,22 @@ function dd(e, t) {
 		value: t
 	}), n;
 }
-async function fd(e, t) {
+async function Ad(e, t) {
 	let n = Q(e);
 	if (!n) return;
-	let r = Au(n.currentWounds, n.source.wounds, n.maximumWounds, t);
-	r !== n.currentWounds && (await e.update({ "system.status.wounds.value": r }), await Yl(e));
+	let r = Ju(n.currentWounds, n.source.wounds, n.maximumWounds, t);
+	r !== n.currentWounds && (await e.update({ "system.status.wounds.value": r }), await pu(e));
 }
 //#endregion
 //#region src/module/unit/register-sheets.ts
-function pd() {
+function jd() {
 	if (!game) throw Error("Cannot register Unit sheets before the game runtime is available.");
 	let e = game, t = foundry.applications.apps.DocumentSheetConfig, n = CONFIG.Actor.documentClass;
-	t.registerSheet(n, Z, dd(e.wfrp4e.apps.ActorSheetWFRP4eCreature, "DrowsyUnitCreatureSheet"), {
+	t.registerSheet(n, Z, kd(e.wfrp4e.apps.ActorSheetWFRP4eCreature, "DrowsyUnitCreatureSheet"), {
 		label: "Unit Creature Sheet",
 		makeDefault: !1,
 		types: ["creature"]
-	}), t.registerSheet(n, Z, dd(e.wfrp4e.apps.ActorSheetWFRP4eNPC, "DrowsyUnitNpcSheet"), {
+	}), t.registerSheet(n, Z, kd(e.wfrp4e.apps.ActorSheetWFRP4eNPC, "DrowsyUnitNpcSheet"), {
 		label: "Unit NPC Sheet",
 		makeDefault: !1,
 		types: ["npc"]
@@ -5179,14 +5238,16 @@ function pd() {
 }
 //#endregion
 //#region src/module/hooks/register-module-hooks.ts
-function md() {
-	fl(), ku(), Hooks.once("init", () => {
-		wl(), Ol(), cl(), pd();
+function Md() {
+	fl(), qu(), Hooks.once("init", () => {
+		zl(), Hl(), Il(), Kl(), cl(), jd();
+	}), Hooks.once("ready", () => {
+		jl();
 	});
 }
 //#endregion
 //#region src/main.ts
-md();
+Md();
 //#endregion
 
 //# sourceMappingURL=fvtt-wfrp-drowsy-content.mjs.map
